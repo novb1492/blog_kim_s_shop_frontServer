@@ -41,6 +41,7 @@ a-4<input type="radio" onclick="showMonth('a-4')" name="seat" >
     <tr id="dateArea5"></tr>
     <tr id="dateArea6"></tr>
 </table>
+<div id="showSelectedDate"></div>
 <div id="timeArea"></div>
 <br>
 <div id="insertOrCancle"></div>
@@ -194,6 +195,7 @@ function getTime(date){
          "year":document.getElementById('year').innerHTML
 	});
     result=fisrtRequest(requestUrl,data);
+    document.getElementById('showSelectedDate').innerHTML=('선택일: '+document.getElementById('year').innerHTML+"-"+document.getElementById('month').innerHTML+"-"+selectDate);
     console.log(result+' 제일위');
     var times=result.times;
     $('#timeArea').empty();
@@ -385,6 +387,7 @@ function selectTimes(){
     selectTime.sort(function (a,b){ return a-b; });
 }
 function clearDateAndButton(){
+    $('#showSelectedDate').empty();
     $('#beforeButton2').empty();
     $('#nextButton2').empty();
     $('#beforeButton').empty();
