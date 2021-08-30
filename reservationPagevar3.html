@@ -17,13 +17,10 @@
 <body>
 <a href="/index">Kim's Shop</a>
 <br>
-<div th:if="${email!=null}">
-    [[${email}]]님 환영 합니다
-    <br>
     <a href="myPage" >마이페이지</a>
     <a href="#" onclick="doLogOut()" >로그아웃</a>
-    <a href="/showReservationPage">예약내역 페이지</a>
-</div>
+    <a href="/showReservationPage.html">예약내역 페이지</a>
+<br>
 a-1<input type="radio" onclick="showMonth('a-1')" name="seat" >
 a-2<input type="radio" onclick="showMonth('a-2')" name="seat" >
 a-3<input type="radio" onclick="showMonth('a-3')" name="seat" >
