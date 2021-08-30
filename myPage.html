@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+</head>
+<body>
+<a href="/index">Kim's Shop</a>
+<br>
+<h2>마이페이지</h2>
+<div class="showEmail"></div>
+<br>
+<div id="sinupDate"></div>
+<br>
+<div id="showName"></div>
+<br>
+<br>
+전화번호:<input type="text" id="phoneNum" onkeyup="checkPhone()" placeholder="전화번호를 입력해주세요" value="" disabled>
+<input type="button" id="sendsms" onclick="sendsms()" value="인증번호 전송" disabled>
+<br>
+인증번호 :<input type="text" id="smsNum" placeholder="인증번호를 입력해주세요" disabled>
+<br>
+<input type="button" id="reWrtiepHone" onclick="reWritePhone()" value="전화번호 수정"> 
+<input type="button" id="goToServer" onclick="doChangePhone()" value="확인" disabled>
+<input type="button" id="canclePhone" onclick="canclePhone()" value="취소" disabled>
+<br>
+<br>
+<input type="text" id="sample6_postcode" placeholder="우편번호" value="" disabled>
+<input type="button" id="findePostCodeButton" onclick="sample6_execDaumPostcode()" value="우편번호 찾기" disabled>
+<br>
+<input type="text" id="sample6_address" placeholder="주소" value="" disabled>
+<br>
+<input type="text" id="sample6_detailAddress" placeholder="상세주소" value="" disabled>
+<input type="text" id="sample6_extraAddress" placeholder="참고항목" value="" disabled>
+<br>
+<input type="button" id="changeAddessButton" value="주소변경" onclick="changeAddessButton()">&nbsp;<input type="button" value="확인" id="changeAddressProButton" onclick="updateAddress()" disabled>&nbsp;<input type="button" value="취소" id="cancleAddressButton" onclick="cancleAddress()" disabled>
+<br>
+
+<br>
+<div id="showEmailCheck"></div>
+<br>
+<div id="showUpdatePwd"></div>
+
+
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>   
+<script src="../static/logout.js"></script>
+<script>
+var xhr=new XMLHttpRequest();
+window.onload = function () {
+    getUserInfor();
+}
+function getUserInfor(){
+	xhr.open('POST','http://localhost:8080/api/userInfor',true);
+    xhr.withCredentials = true;
+    xhr.send();
+    xhr.onload=function(){
+        if(xhr.status==403){
+            alert('로그인을 부탁드립니다');
+            location.href="/index.html";
+        }else if(xhr.status==200){
+            var result=JSON.parse(xhr.response);
+            console.log(result);
+            if(result.status=='newJwtToken'){
+                location.reload(true);
+                result=getNewAccesToken('http://localhost:8080/api/userInfor');
+            }
+            document.getElementsByClassName('showEmail')[0].innerHTML=("이메일: "+result.email);
+			document.getElementById('sinupDate').innerHTML=("가입일: "+result.created);
+			document.getElementById('showName').innerHTML=("이름: "+result.name);
+			document.getElementById("phoneNum").value = result.phoneNum;
+			document.getElementById("sample6_postcode").value =result.postCode;
+			document.getElementById("sample6_address").value =result.address;
+			document.getElementById("sample6_detailAddress").value =result.detailAddress;
+			document.getElementById("sample6_detailAddress").value =result.extraAddress;
+			if(result.emailCheck==0){
+				document.getElementById("showEmailCheck").innerHTML=(result.email+"<input type='button' id='sendEmail' value='인증번호전송' disabled><br>"+"<input type='text' placeholder='인증번호를 입력해주세요' disabled><br><input type='button' onclick='doEmail()' value='이메일인증하기' id='doEmail' >&nbsp;<input type='button' value='확인' id='goToServer2' onclick='doEmailCheck()' disabled>&nbsp;<input type='button' value='취소' id='cancleEmail' onclick='cancleEmail()' disabled>");
+			}else{
+				document.getElementById("showEmailCheck").innerHTML=("이메일 인증완료");
+			}
+			if(result.provider==null){
+				document.getElementById('showUpdatePwd').innerHTML=("비밀번호 변경 하기<br><input type='password' id='nowPwd' placeholder='현재 비밀번호를 입력해주세요'><br><input type='password' id='newPwd' placeholder='새로 사용하실 비밀번호를 입력해 주세요'><br><input type='password' id='newPwd2'placeholder='한번더 입력해주세요'><br><input type='button' id='updatePwdButton' onclick='doUpdatePwd()' value='변경'></div>");
+			}
+        }       
+    }
+}
+function cancleEmail() {
+	document.getElementById('doEmail').disabled=false;
+	document.getElementById('sendEmail').disabled=true;  
+    document.getElementById('cancleEmail').disabled=true;
+}
+function doEmail(){
+	document.getElementById('doEmail').disabled=true;
+	document.getElementById('sendEmail').disabled=false;  
+    document.getElementById('cancleEmail').disabled=false;
+}
+function doUpdatePwd(){
+    let data=JSON.stringify({
+		 "nowPwd":""+document.getElementById('nowPwd').value+"",
+		 "newPwd":""+document.getElementById('newPwd').value+"",
+         "newPwd2":""+document.getElementById('newPwd2').value+""
+		 });
+	 xhr.open('POST','/updatePwd',true);
+	 xhr.setRequestHeader("Content-Type",'application/json');
+     xhr.withCredentials = true;
+	 xhr.send(data);
+	 xhr.onload=function(){
+	        if(xhr.status==200){
+	        	var result=JSON.parse(xhr.response);
+	        	if(result.bool){
+	        		alert(result.messege);
+	        		return;
+	        	}
+	        	alert(result.messege);
+	        	return;
+	        }
+	        alert('통신 실패');
+	    }
+}
+function doChangePhone() {
+	 let data=JSON.stringify({
+		 "phoneNum":""+document.getElementById('phoneNum').value+"",
+		 "tempNum":""+document.getElementById('smsNum').value+""
+		 });
+	 xhr.open('POST','/updatePhoneNum',true);
+	 xhr.setRequestHeader("Content-Type",'application/json');
+     xhr.withCredentials = true;
+	 xhr.send(data);
+	 xhr.onload=function(){
+	        if(xhr.status==200){
+	        	var result=JSON.parse(xhr.response);
+	        	if(result.bool){
+	        		 document.getElementById('goToServer').disabled=true;
+	        		 document.getElementById('sendsms').disabled=true;  
+	        		 document.getElementById('reWrtiepHone').disabled=false;  
+	        		 document.getElementById('smsNum').disabled=true;  
+                     document.getElementById('canclePhone').disabled=true;
+	        		alert(result.messege);
+	        		return;
+	        	}
+	        	alert(result.messege);
+	        	return;
+	        }
+	        alert('통신 실패');
+	    }
+}
+function sendsms() {
+	 document.getElementById('sendsms').disabled=true;  
+	 let data=document.getElementById('phoneNum');
+	 xhr.open('POST','http://localhost:8080/auth/sendSms',true);
+	 xhr.setRequestHeader("Content-Type",'application/x-www-form-urlencoded');
+	 xhr.send('phoneNum='+data.value);
+	 xhr.onload=function(){
+	        if(xhr.status==200){
+	        	var result=JSON.parse(xhr.response);
+	        	if(result.bool){
+	        		 document.getElementById('sendsms').disabled=true;
+	        		 document.getElementById('phoneNum').disabled=true;  
+                     document.getElementById('smsNum').disabled=false;
+                     document.getElementById('goToServer').disabled=false;
+	        		alert(result.messege);
+	        		return;
+	        	}
+	        	alert(result.messege);
+	        	 document.getElementById('sendsms').disabled=false;  
+	        	return;
+	        }
+	        document.getElementById('sendsms').disabled=false;  
+	        alert('통신 실패');
+	    }
+}
+function reWritePhone() {
+    document.getElementById('reWrtiepHone').disabled=true;
+	document.getElementById('sendsms').disabled=false;
+	document.getElementById('phoneNum').disabled=false;  
+    document.getElementById('canclePhone').disabled=false;
+}
+function updateAddress() {
+    let data=JSON.stringify({
+		 "postcode":""+document.getElementById('sample6_postcode').value+"",
+		 "address":""+document.getElementById('sample6_address').value+"",
+		 "detailAddress":""+document.getElementById('sample6_detailAddress').value+"",
+		 "extraAddress":""+document.getElementById('sample6_extraAddress').value+"",
+		 });
+	 console.log(data);
+	 xhr.open('POST','/updateAddress',true);
+	 xhr.setRequestHeader("Content-Type",'application/json');
+     xhr.withCredentials = true;
+	 xhr.send(data);
+	 xhr.onload=function(){
+	        if(xhr.status==200){	
+                var result=JSON.parse(xhr.response);
+	        	if(result.bool){
+                    cancleAddress();
+	        		alert(result.messege);
+	        		return;
+	        	}
+	        	alert(result.messege);
+	        	return;
+	        }else if(xhr.status==403){
+                
+            }
+	        alert(xhr.status);
+	    }
+}
+function cancleAddress() {
+    document.getElementById('changeAddessButton').disabled=false;
+    document.getElementById('findePostCodeButton').disabled=true;
+    document.getElementById('sample6_detailAddress').disabled=true;
+    document.getElementById('changeAddressProButton').disabled=true;
+    document.getElementById('cancleAddressButton').disabled=true;
+}
+function changeAddessButton(){
+    document.getElementById('changeAddessButton').disabled=true;
+    document.getElementById('findePostCodeButton').disabled=false;
+    document.getElementById('sample6_detailAddress').disabled=false;
+    document.getElementById('changeAddressProButton').disabled=false;
+    document.getElementById('cancleAddressButton').disabled=false;
+}
+  function sample6_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+    
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var addr = ''; // 주소 변수
+                var extraAddr = ''; // 참고항목 변수
+    
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                    addr = data.roadAddress;
+                } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                    addr = data.jibunAddress;
+                }
+    
+                // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                if(data.userSelectedType === 'R'){
+                    // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                    // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있고, 공동주택일 경우 추가한다.
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                    // 조합된 참고항목을 해당 필드에 넣는다.
+                    document.getElementById("sample6_extraAddress").value = extraAddr;
+                
+                } else {
+                    document.getElementById("sample6_extraAddress").value = '';
+                }
+    
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('sample6_postcode').value = data.zonecode;
+                document.getElementById("sample6_address").value = addr;
+                // 커서를 상세주소 필드로 이동한다.
+                document.getElementById("sample6_detailAddress").focus();
+            }
+        }).open();
+    }    
+</script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+    <script src="https://cdn.bootpay.co.kr/js/bootpay-3.3.2.min.js" type="application/javascript"></script>
+    <title>예약페이지</title>
+    <style>
+        #month{text-align: center;}
+        #year{text-align: center;}
+    </style>
+</head>
+<body>
+<body>
+<a href="/index">Kim's Shop</a>
+<br>
+<div th:if="${email!=null}">
+    [[${email}]]님 환영 합니다
+    <br>
+    <a href="myPage" >마이페이지</a>
+    <a href="#" onclick="doLogOut()" >로그아웃</a>
+    <a href="/showReservationPage">예약내역 페이지</a>
+</div>
+a-1<input type="radio" onclick="showMonth('a-1')" name="seat" >
+a-2<input type="radio" onclick="showMonth('a-2')" name="seat" >
+a-3<input type="radio" onclick="showMonth('a-3')" name="seat" >
+a-4<input type="radio" onclick="showMonth('a-4')" name="seat" >
+<div id="year"></div>
+<div id="nextButton2"></div><div id="beforeButton2"></div>
+<div id="month"></div>
+<div id="nextButton"></div><div id="beforeButton"></div>
+<table  style="margin-left: auto; margin-right: auto;">
+    <tr id="dayArea"></tr>
+    <tr id="dateArea1"></tr>
+    <tr id="dateArea2"></tr>
+    <tr id="dateArea3"></tr>
+    <tr id="dateArea4"></tr>
+    <tr id="dateArea5"></tr>
+    <tr id="dateArea6"></tr>
+</table>
+<div id="timeArea"></div>
+<br>
+<div id="insertOrCancle"></div>
+<script>
+var xhr=new XMLHttpRequest();
+var selectMonth;
+var selectSeat;
+var selectDate;
+var selectTime=[];
+var selectYear;
+var clicked=0;
+var maxPeopleOfDate=60;
+var maxPeopleOfTime=6;
+var date=new Date();
+var price;
+var countFlag;
+
+
+function setSeat(seat){
+    seat=seat;
+}
+function nextYear(){
+    console.log(year);
+    var year=document.getElementById('year').innerHTML;
+    var month=document.getElementById('month').innerHTML;
+    year*=1;
+    year+=1;
+    console.log(year+"nextyear");
+    if(year<=2050){
+        clearDateAndButton();
+        var seat=selectSeat;
+        showDate(selectSeat,month,year);
+        document.getElementById('year').innerHTML=year;
+    }else{
+        year=2050;
+        alert('마지막연도 입니다');
+    }
+}
+function beforeYear(){
+    console.log(year);
+    var year=document.getElementById('year').innerHTML;
+    var month=document.getElementById('month').innerHTML;
+    year*=1;
+    year-=1;
+    console.log(year+"beforeYear");
+    if(year>=date.getFullYear()){
+        clearDateAndButton();
+        var seat=selectSeat;
+        showDate(selectSeat,month,year);
+        document.getElementById('year').innerHTML=year;
+    }else{
+        alert('처음 연도 입니다');
+    }
+}
+function nextMonth(){
+    console.log(month);
+    var month=document.getElementById('month').innerHTML;
+    month*=1;
+    month+=1;
+    console.log(month+"nextMOnth");
+    if(month<=12){
+        clearDateAndButton();
+        var year= document.getElementById('year').innerHTML;
+        var seat=selectSeat;
+        showDate(selectSeat,month,year);
+        document.getElementById('month').innerHTML=month;
+    }else{
+        alert('마지막월 입니다');
+    }
+}
+function beforeMonth() {
+    console.log(month);
+    var month=document.getElementById('month').innerHTML;
+    var year=document.getElementById('year').innerHTML;
+    month*=1;
+    month-=1;
+    console.log(month+"nextMOnth");
+    if(year>date.getFullYear()&&month>=1){
+        clearDateAndButton();
+        var year= document.getElementById('year').innerHTML;
+        showDate(selectSeat,month,year);
+        document.getElementById('month').innerHTML=month;
+    }
+    else if(month>date.getMonth()){
+        clearDateAndButton();
+        var year= document.getElementById('year').innerHTML;
+        showDate(selectSeat,month,year);
+        document.getElementById('month').innerHTML=month;
+    }else{
+        month=date.getMonth();
+        alert('마지막월 입니다');
+    }
+}
+function showMonth(seat){
+    document.getElementById('month').innerHTML=date.getMonth()+1;
+    document.getElementById('year').innerHTML=date.getFullYear();
+    var month=document.getElementById('month').innerHTML;
+    var year= document.getElementById('year').innerHTML;
+    selectSeat=seat;
+    clearDateAndButton();
+    document.getElementById('dayArea').innerHTML=("<th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th><th>일</th>");
+    showDate(seat,month,year);
+}
+function showDate(seat,month,year) {
+    seat=seat;
+    console.log(seat);
+    console.log(month+'showDate');
+    let data=JSON.stringify({
+		 "seat":seat,
+		 "month":month,
+         "year":year
+		 });
+	 xhr.open('POST','/getDateBySeat',true);
+	 xhr.setRequestHeader("Content-Type",'application/json');
+     xhr.withCredentials = true;
+	 xhr.send(data);
+	 xhr.onload=function(){
+	        if(xhr.status==200){
+	        	var result=JSON.parse(xhr.response);
+                var dates=result.dates;
+                console.log(dates);
+                $('#dateArea').empty();
+                $('#nextButton').append("<input type='button' value='다음달' onclick='nextMonth()'>");
+                $('#beforeButton').append("<input type='button' value='이전달' onclick='beforeMonth()'>");
+                $('#nextButton2').append("<input type='button' value='다음연도' onclick='nextYear()'>");
+                $('#beforeButton2').append("<input type='button' value='이전연도' onclick='beforeYear()'>");
+                var num=1;
+                for(var i=1;i<dates.length;i++){
+                    if(dates[i][2]==100){
+                        $('#dateArea'+num).append("<td><input type='button' id='date' onclick='getTime("+dates[i][0]+")' value='"+dates[i][0]+"' disabled></td>");
+                    }
+                    else{
+                        $('#dateArea'+num).append("<td><input type='button'  id='date' onclick='getTime("+dates[i][0]+")' value='"+dates[i][0]+"'></td>");
+                    }
+                    if(i%7==0){
+                        num+=1;
+                    }
+                }
+                   
+                
+	        }else{
+                alert('통신 실패');
+            }  
+	    }
+}  
+function getTime(date){
+    console.log(selectSeat+'getTime');
+    console.log(date+'getTime');
+    console.log(document.getElementById('month').innerHTML+"gettime");
+    selectDate=date;
+    let data=JSON.stringify({
+		 "seat":selectSeat,
+		 "date":selectDate,
+         "month":document.getElementById('month').innerHTML,
+         "year":document.getElementById('year').innerHTML
+		 });
+	 xhr.open('POST','/getTimeByDate',true);
+	 xhr.setRequestHeader("Content-Type",'application/json');
+     xhr.withCredentials = true;
+	 xhr.send(data);
+	 xhr.onload=function(){
+	        if(xhr.status==200){
+                $('#timeArea').empty();
+                $('#insertOrCancle').empty();
+	        	var result=JSON.parse(xhr.response);
+                var times=result.times;
+                for(var i=0;i<times.length;i++){
+                    if(times[i][2]==100){
+                        console.log('시간이 지났거나 예약이 다참');
+                        $('#timeArea').append("<input type='checkbox' onclick='checkTime()' name='time' value='"+times[i][0]+"' disabled>"+times[i][0]+'시~'+times[i][0]+'시'+times[i][1]+"/"+maxPeopleOfTime+"&nbsp;");
+                    }
+                    else{
+                        $('#timeArea').append("<input type='checkbox' onclick='checkTime("+times[i][0]+")' name='time' value='"+times[i][0]+"'>"+times[i][0]+'시~'+times[i][0]+'시'+times[i][1]+"/"+maxPeopleOfTime+"&nbsp;");
+                    }
+                    if(i>=3&&i%3==0){
+                        $('#timeArea').append('<br>');
+                    }
+                }
+                $('#insertOrCancle').append("<input type='button' onclick='buy()' value='예약하기'>");
+                $('#insertOrCancle').append("<input type='button' value='가상계좌 예약' onclick='boot()'>");
+                
+	        }else{
+                alert('통신 실패');
+            }  
+	    }
+}
+function buy(){
+    selectTimes();
+    getPrice();
+    if(countFlag){
+        iamport();
+    }
+}
+function getPrice(){
+    console.log('getPrice');
+    let data=JSON.stringify({
+		 "productName":selectSeat,
+         "count":selectTime,
+	});
+    $.ajax({
+            type: 'POST',
+            url: '/getPrice',
+            dataType : "json",
+            data: data,
+            contentType: "application/json; charset:UTF-8",
+            async: false,
+            success: function(data) {
+                if(data.totalPrice<=0){
+                    alert(data.messege);
+                    countFlag=false;
+                    return;
+                }
+                alert('총 결제 금액:'+data.totalPrice);
+                countFlag=true;
+                totalPrice=data.totalPrice;
+                price=data.price;
+            },
+            error : function(request,status,error) {
+                selectTime=[];
+                alert("통신 실패");
+            }
+    });
+}
+function iamport(){
+    //가맹점 식별코드
+    IMP.init('imp59938102');
+    IMP.request_pay({
+        pg : 'pg',
+        pay_method : 'pg',
+        merchant_uid : 'merchant_' + new Date().getTime(),
+        name : selectSeat, //결제창에서 보여질 이름
+        amount : totalPrice, //실제 결제되는 가격
+        buyer_email : "buyerEmail",
+        buyer_name : "buyerName",
+        buyer_tel : '010-1234-5678',
+        buyer_addr : '서울',
+        buyer_postcode : '123-456',
+        count :selectTime.length
+    },  function(rsp) {
+        if (rsp.success) {
+            console.log(rsp.imp_uid);
+            doInsert(rsp.imp_uid);
+        }else{
+            selectTime=[];
+             var msg = '결제에 실패하였습니다.';
+             msg += '에러내용 : ' + rsp.error_msg;
+             alert(msg);
+        }
+    });
+}
+
+function doInsert(impnum){
+    console.log('doInsert'+impnum);
+    console.log(selectSeat+'seat');
+    console.log(selectDate+'date');
+    selectYearAndDate();
+    console.log(selectMonth+'month');
+    let data=JSON.stringify({
+		 "seat":selectSeat,
+         "month":selectMonth,
+		 "date":selectDate,
+         "times":selectTime,
+         "year":selectYear,
+         "paymentId":impnum
+	});
+	 xhr.open('POST','/insertReservation',true);
+	 xhr.setRequestHeader("Content-Type",'application/json');
+     xhr.withCredentials = true;
+	 xhr.send(data);
+	 xhr.onload=function(){
+         selectTime=[];
+	        if(xhr.status==200){
+                var result=JSON.parse(xhr.response);
+                alert(result.messege);
+                if(result.expiredDate!=null){
+                    alert('입금은행'+result.vbank+' 가상계좌번호'+result.vbankNum+' 입금기한'+result.expiredDate+' 총 금액'+result.totalPrice);
+                }
+                window.location.reload();
+	        }else{
+                selectTime=[];
+                alert('통신 실패');
+            }  
+	}
+}
+function boot(){
+    selectTimes();
+    selectYearAndDate();
+    getPrice();
+    if(selectMonth<10){
+        selectMonth='0'+selectMonth;
+    }
+    BootPay.request({
+	price: totalPrice, //실제 결제되는 가격
+	application_id: "611fc06f7b5ba4001f52a3e4",
+	name: selectSeat, //결제창에서 보여질 이름
+	pg: 'inicis',
+	method: 'vbank', //결제수단, 입력하지 않으면 결제수단 선택부터 화면이 시작합니다.
+	show_agree_window: 0, // 부트페이 정보 동의 창 보이기 여부
+	items: [
+		{
+			item_name: selectSeat, //상품명
+			qty: selectTime.length, //수량
+			unique: '123', //해당 상품을 구분짓는 primary key
+			price: 0, //상품 단가
+			cat1: 'reservation', // 대표 상품의 카테고리 상, 50글자 이내
+			cat2: 'seat', // 대표 상품의 카테고리 중, 50글자 이내
+			cat3: 'test', // 대표상품의 카테고리 하, 50글자 이내
+		}
+	],
+	user_info: {
+		username: 'kjy',
+		email: 'kim@kim.com',
+		addr: 'test',
+		phone: '010-9144-3409'
+	},
+	order_id: 'test123', //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
+	params: {callback1: 'test', callback2: 'test2', customvar1234: 'test3'},
+	account_expire_at: selectYear+'-'+selectMonth+'-'+selectDate+" 10:00:00", //'2021-09-15 15:00:00', // 가상계좌 입금기간 제한 ( yyyy-mm-dd 포멧으로 입력해주세요. 가상계좌만 적용됩니다. )
+	extra: {
+	    start_at: '2019-05-10', // 정기 결제 시작일 - 시작일을 지정하지 않으면 그 날 당일로부터 결제가 가능한 Billing key 지급
+		end_at: '2022-05-10', // 정기결제 만료일 -  기간 없음 - 무제한
+        vbank_result: 0, // 가상계좌 사용시 사용, 가상계좌 결과창을 볼지(1), 말지(0), 미설정시 봄(1)
+        quota: '0,2,3', // 결제금액이 5만원 이상시 할부개월 허용범위를 설정할 수 있음, [0(일시불), 2개월, 3개월] 허용, 미설정시 12개월까지 허용,
+		theme: 'purple', // [ red, purple(기본), custom ]
+		custom_background: '#00a086', // [ theme가 custom 일 때 background 색상 지정 가능 ]
+		custom_font_color: '#ffffff' // [ theme가 custom 일 때 font color 색상 지정 가능 ]
+	}
+}).error(function (data) {
+	//결제 진행시 에러가 발생하면 수행됩니다.
+	console.log(data);
+}).cancel(function (data) {
+    
+	//결제가 취소되면 수행됩니다.
+	console.log(data);
+}).ready(function (data) {
+	// 가상계좌 입금 계좌번호가 발급되면 호출되는 함수입니다.
+    doInsert(data.receipt_id);
+	console.log(data);
+}).confirm(function (data) {
+	//결제가 실행되기 전에 수행되며, 주로 재고를 확인하는 로직이 들어갑니다.
+	//주의 - 카드 수기결제일 경우 이 부분이 실행되지 않습니다.
+	console.log(data);
+	var enable = false; // 재고 수량 관리 로직 혹은 다른 처리
+	if (enable) {
+		BootPay.transactionConfirm(data); // 조건이 맞으면 승인 처리를 한다.
+	} else {
+		BootPay.removePaymentWindow(); // 조건이 맞지 않으면 결제 창을 닫고 결제를 승인하지 않는다.
+	}
+}).close(function (data) {
+    selectTime=[];
+    // 결제창이 닫힐때 수행됩니다. (성공,실패,취소에 상관없이 모두 수행됨)
+    console.log(data);
+}).done(function (data) {
+	//결제가 정상적으로 완료되면 수행됩니다
+	//비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
+    alert('결제완료');
+	console.log(data);
+});
+} 
+function selectYearAndDate(){
+    selectYear=document.getElementById('year').innerHTML;
+    selectMonth=document.getElementById('month').innerHTML;
+}
+function selectTimes(){
+    var obj_length = document.getElementsByName("time").length;
+    for (var i=0; i<obj_length; i++) {
+            if (document.getElementsByName("time")[i].checked == true) {
+                selectTime[selectTime.length]=document.getElementsByName("time")[i].value;
+            }
+        }
+    for(var i=0;i<selectTime.length;i++){
+        console.log(selectTime[i]+'time');
+    }
+    selectTime.sort(function (a,b){ return a-b; });
+}
+function clearDateAndButton(){
+    $('#beforeButton2').empty();
+    $('#nextButton2').empty();
+    $('#beforeButton').empty();
+    $('#nextButton').empty();
+    $('#dateArea1').empty();
+    $('#dateArea2').empty();
+    $('#dateArea3').empty();
+    $('#dateArea4').empty();
+    $('#dateArea5').empty();
+    $('#dateArea6').empty();
+    $('#timeArea').empty();
+    $('#insertOrCancle').empty();
+}
+</script>
+</body>
+</html>

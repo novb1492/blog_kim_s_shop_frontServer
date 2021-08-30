@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.ckeditor.com/ckeditor5/29.1.0/classic/ckeditor.js"></script>
+    <!-- include libraries(jQuery, bootstrap) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <!-- include summernote css/js -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <title>홈페이지</title>
+</head>
+<body>
+    <a href="/index">Kim's Shop</a>
+    <div id="welcomeArea"></div>
+    <div id="checkLogin"></div>
+   
+    <br>
+    <div id="textArea"></div>
+    <form method="post">
+        <textarea id="summernote" name="editordata"></textarea>
+    </form>
+    <script src="/lib/js/jslib.js"></script>
+ <script>
+var xhr=new XMLHttpRequest();
+window.onload = function () {
+    checkLogin();
+}
+function checkLogin(){
+        xhr.open('POST','http://localhost:8080/api/email',true);
+        xhr.setRequestHeader("Content-Type",'application/json');
+        xhr.withCredentials = true;
+        xhr.send();
+        xhr.onload=function(){
+            if(xhr.status==403){
+                document.getElementById('checkLogin').innerHTML=("<a href='/singupPage.html'>회원가입</a><a href='/loginPage.html'>로그인</a>");  
+                return;
+            }else if(xhr.status==200){
+                var result=JSON.parse(xhr.response);
+                console.log(result);
+                if(result.status=='newJwtToken'){
+                    location.reload(true);
+                    result=getNewAccesToken('http://localhost:8080/api/email');
+                }
+                document.getElementById('welcomeArea').innerHTML=(result.email+"님 환영합니다");
+                document.getElementById('checkLogin').innerHTML=("<a href='/myPage.html'>마이페이지</a><a href='/reservationPagevar3.html'>예약페이지</a>");
+            }       
+        }
+}
+/*$(document).ready(function() {
+  $('#summernote').summernote();
+});
+$('#summernote').summernote({
+				height: 300,                 // 에디터 높이
+				minHeight: null,             // 최소 높이
+				maxHeight: null,             // 최대 높이
+				focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+				lang: "ko-KR",					// 한글 설정
+				placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
+				callbacks: {	//여기 부분이 이미지를 첨부하는 부분
+					onImageUpload : function(files) {
+                        for (var i = files.length - 1; i >= 0; i--) {
+                            uploadSummernoteImageFile(files[i],this);
+            		    }
+					},
+					onPaste: function (e) {
+						var clipboardData = e.originalEvent.clipboardData;
+						if (clipboardData && clipboardData.items && clipboardData.items.length) {
+							var item = clipboardData.items[0];
+							if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+								e.preventDefault();
+							}
+						}
+					}
+				}
+	});
+    function uploadSummernoteImageFile(file, editor) {
+		data = new FormData();
+		data.append("file", file);
+		$.ajax({
+			data : data,
+			type : "POST",
+			url : "/imageUpload",
+			contentType : false,
+			processData : false,
+			success : function(data) {
+                if(data.bool){
+                    $(editor).summernote('insertImage', data.url);
+                    return;
+                }
+				alert(data.messege);
+			}
+		});
+	}*/
+ ClassicEditor
+ .create( document.querySelector( '#summernote' ), {
+    ckfinder: {
+	        uploadUrl: '/imageUpload' // 내가 지정한 업로드 url (post로 요청감)
+		},
+		alignment: {
+            options: [ 'left', 'center', 'right' ]
+        }
+	} )
+	.then( editor => {
+        console.log( 'Editor was initialized', editor );
+        myEditor = editor;
+    } )
+	.catch( error => {
+	    console.error( error );
+	} );
+/*function setThumbnail(event){ 
+    for (var image of event.target.files){ 
+        var reader = new FileReader(); 
+        reader.onload = function(event){ 
+        var img = document.createElement("img"); 
+        img.setAttribute("src", event.target.result); 
+        img.className="photo";
+        img.onclick
+        document.querySelector("#textArea").appendChild(img); 
+        img.addEventListener("click",function(){
+        document.getElementById("textArea").removeChild(img);
+        })
+        }; 
+        console.log(image); 
+        reader.readAsDataURL(image); 
+    } 
+}*/
+
+ </script>
+</body>
+</html>
+
+

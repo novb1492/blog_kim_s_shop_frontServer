@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약내역 페이지</title>
+</head>
+<body>
+<a href="/index">Kim's Shop</a>
+<br>
+<div th:if="${email!=null}">
+    [[${email}]]님 환영 합니다
+    <br>
+    <a href="myPage" >마이페이지</a>
+    <a href="#" onclick="doLogOut()" >로그아웃</a>
+    <a href="/showReservationPage">예약내역 페이지</a>
+</div>
+<br>
+<input type="button" value="예약취소" onclick="cancleReservation()">
+<table id="table"  style="margin-left: auto; margin-right: auto;">
+    <tr id="header"></tr>
+    <tr id="body0"></tr>
+    <tr id="body1"></tr>
+    <tr id="body2"></tr>
+</table>
+<div id="nowPage">1</div>/<div id="totalPage"></div>
+<input type="button" value="다음" onclick="next()">&nbsp;<input type="button" value="이전" onclick="before()">
+<script>
+var xhr=new XMLHttpRequest();  
+var nowPage=document.getElementById('nowPage').innerHTML;
+var totalPage=document.getElementById('totalPage').innerHTML;
+var paging=3;
+var selectTime=[];
+window.onload = function () {
+    getReservation();
+}
+function cancleReservation(){
+    selectTimes();
+    let data=JSON.stringify({
+		 "rid":selectTime
+		 }); 
+        xhr.open('POST','/cancleReservation',true);
+        xhr.setRequestHeader("Content-Type",'application/json');
+        xhr.withCredentials = true;
+        xhr.send(data);
+        xhr.onload=function(){
+                if(xhr.status==200){
+                    var result=JSON.parse(xhr.response);
+                   
+                }else{
+                    alert('통신 실패');
+                }  
+	    }
+}
+function next(){
+    nowPage=document.getElementById('nowPage').innerHTML;
+    if(nowPage==totalPage){
+        alert('마지막 페이지입니다');
+        return;
+    }
+    nowPage=nowPage*1+1;
+    console.log(nowPage+' 다음 페이지');
+    getReservation();
+}
+function before(){
+    if(nowPage<=1){
+        alert('1페이지입니다');
+        return;
+    }
+    nowPage=nowPage*1-1;
+    console.log(nowPage+' 이전 페이지');
+    getReservation();
+}
+function getReservation(){
+        let data=JSON.stringify({
+		 "nowPage":nowPage*1
+		 }); 
+        xhr.open('POST','/getClientReservation',true);
+        xhr.setRequestHeader("Content-Type",'application/json');
+        xhr.withCredentials = true;
+        xhr.send(data);
+        xhr.onload=function(){
+                if(xhr.status==200){
+                    var result=JSON.parse(xhr.response);
+                    if(result.bool){
+                        document.getElementById('header').innerHTML=("<tr id='header'><th>예약번호</th><th>예약일자</th><th>사용일자</th><th>예약자리</th><th>취소</th></tr>");
+                        if(result.reservations==null){
+                            document.getElementById('table').innerHTML=("<td id'>예약내역이 없습니다</td>");
+                        }
+                        var reservations=result.reservations;
+                        for(var i=0;i<reservations.length;i++){
+                            if(reservations[i][4]=='100'){
+                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'disabled></td>");
+                            }else{
+                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'></td>");
+                            }
+                        }
+                        var remainder=reservations.length%paging;
+                        console.log(remainder+" 나머지");
+                            if(remainder!=0){
+                                for(var i=2;i>=remainder;i--){
+                                    document.getElementById('body'+i).innerHTML=("");
+                                }
+                            }
+                            document.getElementById('totalPage').innerHTML=(result.totalPage);
+                            document.getElementById('nowPage').innerHTML=(result.nowPage);
+                            return;
+                    }
+                    alert(result.messege);
+                }else{
+                    alert('통신 실패');
+                }  
+	    }
+}
+function selectTimes(){
+    var obj_length = document.getElementsByName("rid").length;
+    for (var i=0; i<obj_length; i++) {
+            if (document.getElementsByName("rid")[i].checked == true) {
+                selectTime[selectTime.length]=document.getElementsByName("rid")[i].value;
+            }
+        }
+    for(var i=0;i<selectTime.length;i++){
+        console.log(selectTime[i]+'rid');
+    }
+    selectTime.sort(function (a,b){ return a-b; });
+}
+</script>
+</body>
+</html>
