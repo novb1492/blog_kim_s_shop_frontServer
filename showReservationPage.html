@@ -10,9 +10,7 @@
 <body>
 <a href="/index.html">Kim's Shop</a>
 <br>
-<div th:if="${email!=null}">
-    [[${email}]]님 환영 합니다
-    <br>
+    <div id="showEmail"></div>
     <a href="myPage.html" >마이페이지</a>
     <a href="#" onclick="doLogOut()" >로그아웃</a>
     <a href="/showReservationPage.html">예약내역 페이지</a>
@@ -27,6 +25,9 @@
 </table>
 <div id="nowPage">1</div>/<div id="totalPage"></div>
 <input type="button" value="다음" onclick="next()">&nbsp;<input type="button" value="이전" onclick="before()">
+<br>
+시작<input type='date' id='startDate' value=''/>종료<input type='date' id='endDate' value=''/><input type="button" value="검색" onclick="getReservation()">
+
 <script src="/lib/js/jslib.js"></script>
 <script>
 var xhr=new XMLHttpRequest();  
@@ -36,8 +37,17 @@ var paging=3;
 var selectTime=[];
 var requestUrl;
 var result;
+var startDate;
+var endDate;
 window.onload = function () {
+    getEmail();
     getReservation();
+}
+function getEmail(){
+    requestUrl='http://localhost:8080/api/email'; 
+    result=fisrtRequest(requestUrl,null);
+    console.log(result+' 젤위');
+    document.getElementById('showEmail').innerHTML=(result.email);
 }
 function cancleReservation(){
     selectTimes();
@@ -50,6 +60,7 @@ function cancleReservation(){
     location.reload();
 }
 function next(){
+    console.log(document.getElementById('startDate').value+' startDate'+document.getElementById('endDate').value);
     nowPage=document.getElementById('nowPage').innerHTML;
     if(nowPage==totalPage){
         alert('마지막 페이지입니다');
@@ -71,7 +82,9 @@ function before(){
 function getReservation(){
     requestUrl='http://localhost:8080/api/getClientReservation';
         let data=JSON.stringify({
-		 "nowPage":nowPage*1
+		 "nowPage":nowPage*1,
+         "startDate":document.getElementById('startDate').value,
+         "endDate":document.getElementById('endDate').value
 		}); 
         result=fisrtRequest(requestUrl,data);
                     if(result.bool){
