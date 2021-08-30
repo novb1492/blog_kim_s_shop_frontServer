@@ -18,7 +18,7 @@
 <div id="showName"></div>
 <br>
 <br>
-전화번호:<input type="text" id="phoneNum" onkeyup="checkPhone()" placeholder="전화번호를 입력해주세요" value="" disabled>
+전화번호:<input type="text" id="phoneNum"  placeholder="전화번호를 입력해주세요" value="" disabled>
 <input type="button" id="sendsms" onclick="sendsms()" value="인증번호 전송" disabled>
 <br>
 인증번호 :<input type="text" id="smsNum" placeholder="인증번호를 입력해주세요" disabled>
@@ -48,11 +48,12 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> 
 <script src="/lib/js/jslib.js"></script>   
 <script>
-var xhr=new XMLHttpRequest();
+var result;
 window.onload = function () {
     getUserInfor();
 }
 function getUserInfor(){
+	var xhr=new XMLHttpRequest();
 	var requestUrl='http://localhost:8080/api/userInfor';
 	xhr.open('POST',requestUrl,true);
     xhr.withCredentials = true;
@@ -66,7 +67,6 @@ function getUserInfor(){
             console.log(result);
             if(result.status=='newJwtToken'){
                 result=getNewAccesToken(requestUrl,null);
-				location.reload(true);
             }
             document.getElementsByClassName('showEmail')[0].innerHTML=("이메일: "+result.email);
 			document.getElementById('sinupDate').innerHTML=("가입일: "+result.created);
@@ -104,26 +104,9 @@ function doUpdatePwd(){
 		 "newPwd":""+document.getElementById('newPwd').value+"",
          "newPwd2":""+document.getElementById('newPwd2').value+""
 		 });
-	 xhr.open('POST',requestUrl,true);
-	 xhr.setRequestHeader("Content-Type",'application/json');
-     xhr.withCredentials = true;
-	 xhr.send(data);
-	 xhr.onload=function(){
-	        if(xhr.status==200){
-	        	var result=JSON.parse(xhr.response);
-				if(result.status=='newJwtToken'){
-					result=getNewAccesToken(requestUrl,data);
-            	}
-	        	if(result.bool){
-	        		alert(result.messege);
-	        		return;
-	        	}
-	        	alert(result.messege);
-	        	return;
-				location.reload(true);
-	        }
-	        alert('통신 실패');
-	    }
+		result=fisrtRequest(requestUrl,data);
+		canclePwd();
+		alert(result.messege);	 
 }
 function doChangePhone() {
 	var requestUrl='http://localhost:8080/api/updatePhoneNum';
@@ -131,33 +114,21 @@ function doChangePhone() {
 		 "phoneNum":""+document.getElementById('phoneNum').value+"",
 		 "tempNum":""+document.getElementById('smsNum').value+""
 		 });
-	 xhr.open('POST',requestUrl,true);
-	 xhr.setRequestHeader("Content-Type",'application/json');
-     xhr.withCredentials = true;
-	 xhr.send(data);
-	 xhr.onload=function(){
-	        if(xhr.status==200){
-	        	var result=JSON.parse(xhr.response);
-				if(result.status=='newJwtToken'){
-					result=getNewAccesToken(requestUrl,data);
-					location.reload(true);
-            	}
-	        	if(result.bool){
-	        		 document.getElementById('goToServer').disabled=true;
+	result=fisrtRequest(requestUrl,data);
+	if(result.bool){
+		canclePhone();
+	} 
+	alert(result.messege);	 
+}
+function canclePhone() {
+	document.getElementById('goToServer').disabled=true;
 	        		 document.getElementById('sendsms').disabled=true;  
 	        		 document.getElementById('reWrtiepHone').disabled=false;  
 	        		 document.getElementById('smsNum').disabled=true;  
                      document.getElementById('canclePhone').disabled=true;
-	        		alert(result.messege);
-	        		return;
-	        	}
-	        	alert(result.messege);
-	        	return;
-	        }
-	        alert('통신 실패');
-	    }
 }
 function sendsms() {
+	var xhr=new XMLHttpRequest();
 	var requestUrl='http://localhost:8080/auth/sendSms';
 	 document.getElementById('sendsms').disabled=true;  
 	 let data=document.getElementById('phoneNum');
@@ -197,26 +168,16 @@ function updateAddress() {
 		 "detailAddress":""+document.getElementById('sample6_detailAddress').value+"",
 		 "extraAddress":""+document.getElementById('sample6_extraAddress').value+"",
 		 });
-		 $.ajax({
-            type: 'POST',
-            url: requestUrl,
-            dataType : "json",
-            data: data,
-            contentType: "application/json; charset:UTF-8",
-            async: false,
-			xhrFields: {withCredentials: true},
-            success: function(response) {
-				var json;
-                if(response.status=='newJwtToken'){
-					json=getNewAccesToken(requestUrl,data);
-                }
-				alert(json.messege);
-            },
-            error : function(request,status,error) {
-                selectTime=[];
-                alert("통신 실패");
-            }
-    });
+	result=fisrtRequest(requestUrl,data);
+	if(result.bool){
+		cancleAddress();
+	} 
+	alert(result.messege);
+}
+function canclePwd() {
+    document.getElementById('nowPwd').value="";
+	document.getElementById('newPwd').value="";
+    document.getElementById('newPwd2').value="";
 }
 function cancleAddress() {
     document.getElementById('changeAddessButton').disabled=false;
