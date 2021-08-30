@@ -45,7 +45,7 @@ function checkLogin(){
                 console.log(result);
                 if(result.status=='newJwtToken'){
                     location.reload(true);
-                    result=getNewAccesToken('http://localhost:8080/api/email');
+                    result=getNewAccesToken('http://localhost:8080/api/email',null);
                 }
                 document.getElementById('welcomeArea').innerHTML=(result.email+"님 환영합니다");
                 document.getElementById('checkLogin').innerHTML=("<a href='/myPage.html'>마이페이지</a><a href='/reservationPagevar3.html'>예약페이지</a>");
