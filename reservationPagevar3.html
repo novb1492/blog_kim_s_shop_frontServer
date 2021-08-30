@@ -222,34 +222,24 @@ function buy(){
     }
 }
 function getPrice(){
+    requestUrl='http://localhost:8080/api/getPrice'
     console.log('getPrice');
     let data=JSON.stringify({
 		 "productName":selectSeat,
          "count":selectTime,
 	});
-    $.ajax({
-            type: 'POST',
-            url: '/getPrice',
-            dataType : "json",
-            data: data,
-            contentType: "application/json; charset:UTF-8",
-            async: false,
-            success: function(data) {
-                if(data.totalPrice<=0){
-                    alert(data.messege);
+    result=fisrtRequest(requestUrl,data);
+    console.log(result+' 제일위');
+                if(result.totalPrice<=0){
+                    alert(result.messege);
                     countFlag=false;
                     return;
                 }
-                alert('총 결제 금액:'+data.totalPrice);
+                alert('총 결제 금액:'+result.totalPrice);
                 countFlag=true;
-                totalPrice=data.totalPrice;
-                price=data.price;
-            },
-            error : function(request,status,error) {
-                selectTime=[];
-                alert("통신 실패");
-            }
-    });
+                totalPrice=result.totalPrice;
+                price=result.price;
+           
 }
 function iamport(){
     //가맹점 식별코드
@@ -285,6 +275,7 @@ function doInsert(impnum){
     console.log(selectDate+'date');
     selectYearAndDate();
     console.log(selectMonth+'month');
+    requestUrl='http://localhost:8080/api/insertReservation'
     let data=JSON.stringify({
 		 "seat":selectSeat,
          "month":selectMonth,
@@ -293,24 +284,14 @@ function doInsert(impnum){
          "year":selectYear,
          "paymentId":impnum
 	});
-	 xhr.open('POST','/insertReservation',true);
-	 xhr.setRequestHeader("Content-Type",'application/json');
-     xhr.withCredentials = true;
-	 xhr.send(data);
-	 xhr.onload=function(){
-         selectTime=[];
-	        if(xhr.status==200){
-                var result=JSON.parse(xhr.response);
+	result=fisrtRequest(requestUrl,data);
+    console.log(result+' 제일위');
                 alert(result.messege);
                 if(result.expiredDate!=null){
                     alert('입금은행'+result.vbank+' 가상계좌번호'+result.vbankNum+' 입금기한'+result.expiredDate+' 총 금액'+result.totalPrice);
-                }
-                window.location.reload();
-	        }else{
-                selectTime=[];
-                alert('통신 실패');
-            }  
-	}
+                } 
+    selectTime=[];  
+    location.reload();   
 }
 function boot(){
     selectTimes();
