@@ -16,7 +16,7 @@
     <title>홈페이지</title>
 </head>
 <body>
-    <a href="/index">Kim's Shop</a>
+    <a href="/index.html">Kim's Shop</a>
     <div id="welcomeArea"></div>
     <div id="checkLogin"></div>
    
@@ -28,11 +28,13 @@
     <script src="/lib/js/jslib.js"></script>
  <script>
 var xhr=new XMLHttpRequest();
+var requestUrl;
+var result;
 window.onload = function () {
     checkLogin();
 }
 function checkLogin(){
-    var requestUrl='http://localhost:8080/api/userInfor';
+     requestUrl='http://localhost:8080/api/userInfor';
         xhr.open('POST','http://localhost:8080/api/email',true);
         xhr.setRequestHeader("Content-Type",'application/json');
         xhr.withCredentials = true;
@@ -53,7 +55,7 @@ function checkLogin(){
             }       
         }
 }
-/*$(document).ready(function() {
+$(document).ready(function() {
   $('#summernote').summernote();
 });
 $('#summernote').summernote({
@@ -81,27 +83,17 @@ $('#summernote').summernote({
 				}
 	});
     function uploadSummernoteImageFile(file, editor) {
-		data = new FormData();
+        requestUrl='http://localhost:8080/api/imageUpload';
+		var data = new FormData();
 		data.append("file", file);
-		$.ajax({
-			data : data,
-			type : "POST",
-			url : "/imageUpload",
-			contentType : false,
-			processData : false,
-			success : function(data) {
-                if(data.bool){
-                    $(editor).summernote('insertImage', data.url);
-                    return;
-                }
-				alert(data.messege);
-			}
-		});
-	}*/
- ClassicEditor
+        var response=fisrtRequestForm(requestUrl,data);
+        console.log(response+' 젤위')
+        $(editor).summernote('insertImage', response.url);
+	}
+ /*ClassicEditor
  .create( document.querySelector( '#summernote' ), {
     ckfinder: {
-	        uploadUrl: '/imageUpload' // 내가 지정한 업로드 url (post로 요청감)
+	        uploadUrl: 'http://localhost:8080/api/imageUpload' // 내가 지정한 업로드 url (post로 요청감)
 		},
 		alignment: {
             options: [ 'left', 'center', 'right' ]
@@ -113,7 +105,7 @@ $('#summernote').summernote({
     } )
 	.catch( error => {
 	    console.error( error );
-	} );
+	} );*/
 /*function setThumbnail(event){ 
     for (var image of event.target.files){ 
         var reader = new FileReader(); 
