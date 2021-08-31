@@ -15,9 +15,9 @@
 </head>
 <body>
 <body>
-<a href="/index">Kim's Shop</a>
+<a href="/index.html">Kim's Shop</a>
 <br>
-    <a href="myPage" >마이페이지</a>
+    <a href="myPage.html" >마이페이지</a>
     <a href="#" onclick="doLogOut()" >로그아웃</a>
     <a href="/showReservationPage.html">예약내역 페이지</a>
 <br>
@@ -297,6 +297,7 @@ function boot(){
     selectYearAndDate();
     console.log(selectYear+selectMonth+selectDate+' bootpay');
     getPrice();
+    getVankDate();
     if(selectMonth<10){
         selectMonth='0'+selectMonth;
     }
@@ -387,6 +388,9 @@ function selectTimes(){
         console.log(selectTime[i]+'time');
     }
     selectTime.sort(function (a,b){ return a-b; });
+}
+function getVankDate(){
+
 }
 function clearDateAndButton(){
     $('#showSelectedDate').empty();

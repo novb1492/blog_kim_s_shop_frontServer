@@ -13,7 +13,7 @@
     <div id="showEmail"></div>
     <a href="myPage.html" >마이페이지</a>
     <a href="#" onclick="doLogOut()" >로그아웃</a>
-    <a href="/showReservationPage.html">예약내역 페이지</a>
+    <a href="/reservationPagevar3.html">예약페이지</a>
 </div>
 <br>
 <input type="button" value="예약취소" onclick="cancleReservation()">
@@ -88,16 +88,16 @@ function getReservation(){
 		}); 
         result=fisrtRequest(requestUrl,data);
                     if(result.bool){
-                        document.getElementById('header').innerHTML=("<tr id='header'><th>예약번호</th><th>예약일자</th><th>사용일자</th><th>예약자리</th><th>취소</th></tr>");
+                        document.getElementById('header').innerHTML=("<tr id='header'><th>예약번호</th><th>예약일자</th><th>사용일자</th><th>예약자리</th><th>취소</th><th>결제상황</th><th>계좌번호</th><th>결제기한</th></tr>");
                         if(result.reservations==null){
                             document.getElementById('table').innerHTML=("<td id'>예약내역이 없습니다</td>");
                         }
                         var reservations=result.reservations;
                         for(var i=0;i<reservations.length;i++){
                             if(reservations[i][4]=='100'){
-                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'disabled></td>");
+                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'disabled></td><td id='reservationId'>"+result.reservations[i][4]+"</td><td id='reservationId'>결제기간이 지났습니다</td><td id='reservationId'>>결제기간이 지났습니다</td>");
                             }else{
-                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'></td>");
+                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'></td><td id='reservationId'>"+result.reservations[i][4]+"</td><td id='reservationId'>"+result.reservations[i][5]+"</td><td id='reservationId'>"+result.reservations[i][6]+"</td>");
                             }
                         }
                         var remainder=reservations.length%paging;
