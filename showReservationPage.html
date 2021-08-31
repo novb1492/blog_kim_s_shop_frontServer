@@ -89,7 +89,7 @@ function getReservation(){
 		}); 
         result=fisrtRequest(requestUrl,data);
                     if(result.bool){
-                        document.getElementById('header').innerHTML=("<tr id='header'><th>예약번호</th><th>예약일자</th><th>사용일자</th><th>예약자리</th><th>취소</th><th>결제상황</th><th>계좌번호</th><th>결제기한</th></tr>");
+                        document.getElementById('header').innerHTML=("<tr id='header'><th>예약번호</th><th>예약일자</th><th>사용일자</th><th>예약자리</th><th>취소</th><th>결제상황</th><th>계좌번호/결제수단</th><th>결제기한/결제완료일</th></tr>");
                         var reservations=result.reservations;
                         if(reservations==null||reservations.length==0){
                             for(var i=0;i<paging;i++){
