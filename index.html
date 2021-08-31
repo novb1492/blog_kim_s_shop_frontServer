@@ -36,7 +36,7 @@ function checkLogin(){
                     result=getNewAccesToken('http://localhost:8080/api/email',null);
                 }
                 document.getElementById('welcomeArea').innerHTML=(result.email+"님 환영합니다");
-                document.getElementById('checkLogin').innerHTML=("<a href='/myPage.html'>마이페이지</a><a href='/reservationPagevar3.html'>예약페이지</a><a href='/writeArticlePage.html'>글쓰기</a>");
+                document.getElementById('checkLogin').innerHTML=("<a href='/myPage.html'>마이페이지</a><a href='/reservationPagevar3.html'>예약페이지</a><a href='/boardPage.html'>후기게시판</a>");
             }       
         }
 }
