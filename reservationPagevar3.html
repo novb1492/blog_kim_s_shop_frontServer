@@ -17,6 +17,7 @@
 <body>
 <a href="/index.html">Kim's Shop</a>
 <br>
+    <div id="showEmail"></div>
     <a href="myPage.html" >마이페이지</a>
     <a href="#" onclick="doLogOut()" >로그아웃</a>
     <a href="/showReservationPage.html">예약내역 페이지</a>
@@ -59,8 +60,25 @@ var date=new Date();
 var price;
 var countFlag;
 var vankDate;
+var email;
+var name;
+var phoneNum;
+var address;
+var postCode;
 
-
+window.onload=function(){
+    getUserInfor();
+}
+function getUserInfor(){
+	var requestUrl='http://localhost:8080/api/userInfor';
+    result=fisrtRequest(requestUrl,null);
+    document.getElementById('showEmail').innerHTML=(result.email+"님 환영합니다");
+    email=result.email;
+    name=result.name;
+    phoneNum=result.phoneNum;   
+    address=result.address+' '+result.detailAddress;
+    postCode=result.postCode;        
+}
 function setSeat(seat){
     seat=seat;
 }
@@ -250,11 +268,11 @@ function iamport(){
         merchant_uid : 'merchant_' + new Date().getTime(),
         name : selectSeat, //결제창에서 보여질 이름
         amount : totalPrice, //실제 결제되는 가격
-        buyer_email : "buyerEmail",
-        buyer_name : "buyerName",
-        buyer_tel : '010-1234-5678',
-        buyer_addr : '서울',
-        buyer_postcode : '123-456',
+        buyer_email : email,
+        buyer_name : name,
+        buyer_tel : phoneNum,
+        buyer_addr : address,
+        buyer_postcode : postCode,
         count :selectTime.length
     },  function(rsp) {
         if (rsp.success) {
@@ -324,10 +342,10 @@ function boot(){
 		}
 	],
 	user_info: {
-		username: 'kjy',
-		email: 'kim@kim.com',
-		addr: 'test',
-		phone: '010-9144-3409'
+		username: name,
+		email: email,
+		addr: address,
+		phone: phoneNum
 	},
 	order_id: 'test123', //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
 	params: {callback1: 'test', callback2: 'test2', customvar1234: 'test3'},

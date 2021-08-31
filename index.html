@@ -93,7 +93,8 @@ $('#summernote').summernote({
  /*ClassicEditor
  .create( document.querySelector( '#summernote' ), {
     ckfinder: {
-	        uploadUrl: 'http://localhost:8080/api/imageUpload' // 내가 지정한 업로드 url (post로 요청감)
+	        uploadUrl: 'http://localhost:8080/api/imageUpload', // 내가 지정한 업로드 url (post로 요청감)
+            //withCredentials: true
 		},
 		alignment: {
             options: [ 'left', 'center', 'right' ]
@@ -105,7 +106,7 @@ $('#summernote').summernote({
     } )
 	.catch( error => {
 	    console.error( error );
-	} );*/
+	} );
 /*function setThumbnail(event){ 
     for (var image of event.target.files){ 
         var reader = new FileReader(); 
