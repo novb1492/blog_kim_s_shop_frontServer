@@ -58,6 +58,7 @@ var maxPeopleOfTime=6;
 var date=new Date();
 var price;
 var countFlag;
+var vankDate;
 
 
 function setSeat(seat){
@@ -330,7 +331,7 @@ function boot(){
 	},
 	order_id: 'test123', //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
 	params: {callback1: 'test', callback2: 'test2', customvar1234: 'test3'},
-	account_expire_at: selectYear+'-'+selectMonth+'-'+selectDate, //'2021-09-15 15:00:00', // 가상계좌 입금기간 제한 ( yyyy-mm-dd 포멧으로 입력해주세요. 가상계좌만 적용됩니다. )
+	account_expire_at: vbankDate, //'2021-09-15 15:00:00', // 가상계좌 입금기간 제한 ( yyyy-mm-dd 포멧으로 입력해주세요. 가상계좌만 적용됩니다. )
 	extra: {
 	    start_at: '2019-05-10', // 정기 결제 시작일 - 시작일을 지정하지 않으면 그 날 당일로부터 결제가 가능한 Billing key 지급
 		end_at: '2022-05-10', // 정기결제 만료일 -  기간 없음 - 무제한
@@ -390,6 +391,21 @@ function selectTimes(){
     selectTime.sort(function (a,b){ return a-b; });
 }
 function getVankDate(){
+    requestUrl='http://localhost:8080/api/getVankDate';
+    let data=JSON.stringify({
+         "month":selectMonth,
+		 "date":selectDate,
+         "times":selectTime,
+         "year":selectYear
+	});
+    result=fisrtRequest(requestUrl,data);
+    console.log(result+' 제일위');
+    if(result.bool){
+        vbankDate=result.messege;
+    }else{
+        alert(result.messege);
+        return;
+    }
 
 }
 function clearDateAndButton(){
