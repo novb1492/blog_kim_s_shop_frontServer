@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.ckeditor.com/ckeditor5/29.1.0/classic/ckeditor.js"></script>
+    <!-- include libraries(jQuery, bootstrap) -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <!-- include summernote css/js -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <title>글쓰기페이지</title>
+</head>
+<body>
+    제목:<input type="text" id="title" placeholder="제목을 적어주세요">
+    <div id="showEmail"></div>
+    <textarea id="summernote" name="editordata"></textarea>
+    <input type="button" value="제출" onclick="insertArticle()">
+   
+
+<script src="/lib/js/jslib.js"></script>
+<script>
+var requestUrl;
+var result;
+window.onload=function(){
+    getEmail();
+}
+function getEmail() {
+    requestUrl='http://localhost:8080/api/email';
+    result=fisrtRequest(requestUrl,null);
+    document.getElementById('showEmail').innerHTML=('작성자: '+result.email);
+}
+$(document).ready(function() {
+  $('#summernote').summernote();
+});
+$('#summernote').summernote({
+				height: 300,                 // 에디터 높이
+				minHeight: null,             // 최소 높이
+				maxHeight: null,             // 최대 높이
+				focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+				lang: "ko-KR",					// 한글 설정
+				placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
+				callbacks: {	//여기 부분이 이미지를 첨부하는 부분
+					onImageUpload : function(files) {
+                        for (var i = files.length - 1; i >= 0; i--) {
+                            uploadSummernoteImageFile(files[i],this);
+            		    }
+					},
+					onPaste: function (e) {
+						var clipboardData = e.originalEvent.clipboardData;
+						if (clipboardData && clipboardData.items && clipboardData.items.length) {
+							var item = clipboardData.items[0];
+							if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+								e.preventDefault();
+							}
+						}
+					}
+				}
+	});
+    function uploadSummernoteImageFile(file, editor) {
+        requestUrl='http://localhost:8080/api/imageUpload';
+		var data = new FormData();
+		data.append("file", file);
+        var response=fisrtRequestForm(requestUrl,data);
+        console.log(response+' 젤위')
+        $(editor).summernote('insertImage', response.url);
+	}
+ /*ClassicEditor
+ .create( document.querySelector( '#summernote' ), {
+    ckfinder: {
+	        uploadUrl: 'http://localhost:8080/api/imageUpload', // 내가 지정한 업로드 url (post로 요청감)
+            //withCredentials: true
+		},
+		alignment: {
+            options: [ 'left', 'center', 'right' ]
+        }
+	} )
+	.then( editor => {
+        console.log( 'Editor was initialized', editor );
+        myEditor = editor;
+    } )
+	.catch( error => {
+	    console.error( error );
+	} );
+/*function setThumbnail(event){ 
+    for (var image of event.target.files){ 
+        var reader = new FileReader(); 
+        reader.onload = function(event){ 
+        var img = document.createElement("img"); 
+        img.setAttribute("src", event.target.result); 
+        img.className="photo";
+        img.onclick
+        document.querySelector("#textArea").appendChild(img); 
+        img.addEventListener("click",function(){
+        document.getElementById("textArea").removeChild(img);
+        })
+        }; 
+        console.log(image); 
+        reader.readAsDataURL(image); 
+    } 
+}*/
+    </script>
+</body>
+</html>
