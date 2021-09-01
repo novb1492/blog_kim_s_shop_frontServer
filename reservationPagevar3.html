@@ -232,6 +232,7 @@ function getTime(date){
                 $('#insertOrCancle').append("<input type='button' value='가상계좌 예약' onclick='vbank()'>");
 }
 function buy(){
+    selectYearAndDate();
     selectTimes();
     getPrice();
 }
@@ -285,6 +286,7 @@ function iamport(){
 }
 function vbank(){
     buy();
+    getVankDate();
     //가맹점 식별코드
     IMP.init('imp59938102');
     IMP.request_pay({
@@ -298,7 +300,8 @@ function vbank(){
         buyer_tel : phoneNum,
         buyer_addr : address,
         buyer_postcode : postCode,
-        count :selectTime.length
+        count :selectTime.length,
+        vbank_due:vbankDate
     },  function(rsp) {
         if (rsp.success) {
             console.log(rsp.imp_uid);
