@@ -97,7 +97,7 @@ function getReservation(){
                             }
                         }
                         for(var i=0;i<reservations.length;i++){
-                            if(reservations[i][4]=='100'){
+                            if(reservations[i][8]=='100'){
                                 document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'disabled></td><td id='reservationId'>"+result.reservations[i][4]+"</td><td id='reservationId'>"+result.reservations[i][5]+"</td><td id='reservationId'>"+result.reservations[i][6]+"</td><td id='reservationId'>"+result.reservations[i][7]+"</td>");
                             }else{
                                 document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'></td><td id='reservationId'>"+result.reservations[i][4]+"</td><td id='reservationId'>"+result.reservations[i][5]+"</td><td id='reservationId'>"+result.reservations[i][6]+"</td><td id='reservationId'>"+result.reservations[i][7]+"</td>");
