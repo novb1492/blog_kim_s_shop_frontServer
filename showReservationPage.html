@@ -89,7 +89,7 @@ function getReservation(){
 		}); 
         result=fisrtRequest(requestUrl,data);
                     if(result.bool){
-                        document.getElementById('header').innerHTML=("<tr id='header'><th>예약번호</th><th>예약일자</th><th>사용일자</th><th>예약자리</th><th>취소</th><th>결제상황</th><th>계좌번호/결제수단</th><th>결제기한/결제완료일</th></tr>");
+                        document.getElementById('header').innerHTML=("<tr id='header'><th>예약번호</th><th>예약일자</th><th>사용일자</th><th>예약자리</th><th>취소</th><th>결제상황</th><th>계좌번호/결제수단</th><th>결제기한/결제완료일</th><th>금액</th></tr>");
                         var reservations=result.reservations;
                         if(reservations==null||reservations.length==0){
                             for(var i=0;i<paging;i++){
@@ -98,9 +98,9 @@ function getReservation(){
                         }
                         for(var i=0;i<reservations.length;i++){
                             if(reservations[i][4]=='100'){
-                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'disabled></td><td id='reservationId'>"+result.reservations[i][4]+"</td><td id='reservationId'>결제기간이 지났습니다</td><td id='reservationId'>>결제기간이 지났습니다</td>");
+                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'disabled></td><td id='reservationId'>"+result.reservations[i][4]+"</td><td id='reservationId'>"+result.reservations[i][5]+"</td><td id='reservationId'>"+result.reservations[i][6]+"</td><td id='reservationId'>"+result.reservations[i][7]+"</td>");
                             }else{
-                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'></td><td id='reservationId'>"+result.reservations[i][4]+"</td><td id='reservationId'>"+result.reservations[i][5]+"</td><td id='reservationId'>"+result.reservations[i][6]+"</td>");
+                                document.getElementById('body'+i).innerHTML=("<td id='reservationId'>"+result.reservations[i][0]+"</td><td id='reservationId'>"+result.reservations[i][2]+"</td><td id='reservationId'>"+result.reservations[i][3]+"</td><td id='reservationId'>"+result.reservations[i][1]+"</td><td id='reservationId'><input type='checkbox' name='rid' value='"+result.reservations[i][0]+"'></td><td id='reservationId'>"+result.reservations[i][4]+"</td><td id='reservationId'>"+result.reservations[i][5]+"</td><td id='reservationId'>"+result.reservations[i][6]+"</td><td id='reservationId'>"+result.reservations[i][7]+"</td>");
                             }
                         }
                         var remainder=reservations.length%paging;

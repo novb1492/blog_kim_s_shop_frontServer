@@ -219,10 +219,10 @@ function getTime(date){
                 for(var i=0;i<times.length;i++){
                     if(times[i][2]==100){
                         console.log('시간이 지났거나 예약이 다참');
-                        $('#timeArea').append("<input type='checkbox' onclick='checkTime()' name='time' value='"+times[i][0]+"' disabled>"+times[i][0]+'시~'+times[i][0]+'시'+times[i][1]+"/"+maxPeopleOfTime+"&nbsp;");
+                        $('#timeArea').append("<input type='checkbox' onclick='checkTime()' name='time' value='"+times[i][0]+"' disabled>"+times[i][0]+'시~'+(times[i][0]+1)+'시'+times[i][1]+"/"+maxPeopleOfTime+"&nbsp;");
                     }
                     else{
-                        $('#timeArea').append("<input type='checkbox' onclick='checkTime("+times[i][0]+")' name='time' value='"+times[i][0]+"'>"+times[i][0]+'시~'+times[i][0]+'시'+times[i][1]+"/"+maxPeopleOfTime+"&nbsp;");
+                        $('#timeArea').append("<input type='checkbox' onclick='checkTime("+times[i][0]+")' name='time' value='"+times[i][0]+"'>"+times[i][0]+'시~'+(times[i][0]+1)+'시'+times[i][1]+"/"+maxPeopleOfTime+"&nbsp;");
                     }
                     if(i>=3&&i%3==0){
                         $('#timeArea').append('<br>');
@@ -263,7 +263,7 @@ function iamport(){
     IMP.request_pay({
         pg : 'kcp',
         pay_method : 'card',
-        merchant_uid : 'merchant_' + new Date().getTime(),
+        merchant_uid : 'merchant_uid'+ new Date().getTime(),
         name : selectSeat, //결제창에서 보여질 이름
         amount : totalPrice, //실제 결제되는 가격
         buyer_email : email,
@@ -292,7 +292,7 @@ function vbank(){
     IMP.request_pay({
         pg : 'kcp',
         pay_method : 'vbank',
-        merchant_uid : 'merchant_' + new Date().getTime(),
+        merchant_uid : 'vbank'+ new Date().getTime(),
         name : selectSeat, //결제창에서 보여질 이름
         amount : totalPrice, //실제 결제되는 가격
         buyer_email : email,
