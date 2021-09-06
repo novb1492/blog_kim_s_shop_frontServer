@@ -14,7 +14,9 @@
     <a href="myPage.html" >마이페이지</a>
     <a href="#" onclick="doLogOut()" >로그아웃</a>
     <a href="/reservationPagevar3.html">예약페이지</a>
-</div>
+<div>가상계좌 미입금시 금액은 합산되어있는 금액입니다
+<br>
+가상계좌는 부분환불을 지원하지 않고있습니다</div>
 <br>
 <input type="button" value="예약취소" onclick="cancleReservation()">
 <table id="table"  style="margin-left: auto; margin-right: auto;">
@@ -113,6 +115,9 @@ function getReservation(){
                             document.getElementById('totalPage').innerHTML=(result.totalPage);
                             document.getElementById('nowPage').innerHTML=(result.nowPage);
                             return;
+                    }
+                    if(nowPage>=totalPage){
+                        nowPage-=1;
                     }
                     alert(result.messege);
 }
