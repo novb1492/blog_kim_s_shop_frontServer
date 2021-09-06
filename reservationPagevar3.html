@@ -230,14 +230,37 @@ function getTime(date){
                 }
                 $('#insertOrCancle').append("<input type='button' onclick='iamport()' value='예약하기'>");
                 $('#insertOrCancle').append("<input type='button' value='가상계좌 예약' onclick='vbank()'>");
+                $('#insertOrCancle').append("<input type='button' value='카카오페이' onclick='kakaopay()'>");
 }
 function buy(){
     selectYearAndDate();
     selectTimes();
     getPrice();
 }
+function kakaopay() {
+    buy();
+    requestUrl='http://localhost:8080/api/kakaopay';
+    let data=JSON.stringify({
+		 "totalPrice":totalPrice,
+         "item":selectSeat,
+         "month":selectMonth,
+		 "date":selectDate,
+         "count":selectTime,
+         "year":selectYear
+	});
+    result=fisrtRequest(requestUrl,data);
+    console.log(result+' 제일위');
+    if(result.bool){
+        var url=result.messege;
+        var childWin=window.open(url);
+        opener.window.document.result.value = childWin.result.bool;
+        return;
+    }
+    alert(result.messege);
+   
+}
 function getPrice(){
-    requestUrl='http://localhost:8080/api/getPrice'
+    requestUrl='http://localhost:8080/api/getPrice';
     console.log('getPrice');
     let data=JSON.stringify({
 		 "productName":selectSeat,
