@@ -64,6 +64,8 @@ var name;
 var phoneNum;
 var address;
 var postCode;
+var itemArray;
+var other;
 
 window.onload=function(){
     getUserInfor();
@@ -77,9 +79,6 @@ function getUserInfor(){
     phoneNum=result.phoneNum;   
     address=result.address+' '+result.detailAddress;
     postCode=result.postCode;        
-}
-function setSeat(seat){
-    seat=seat;
 }
 function nextYear(){
     console.log(year);
@@ -230,41 +229,82 @@ function getTime(date){
                 }
                 $('#insertOrCancle').append("<input type='button' onclick='iamport()' value='예약하기'>");
                 $('#insertOrCancle').append("<input type='button' value='가상계좌 예약' onclick='vbank()'>");
-                //$('#insertOrCancle').append("<input type='button' value='카카오페이' onclick='kakaopay()'>");
+                $('#insertOrCancle').append("<input type='button' value='카카오페이' onclick='kakaopay()'>");
 }
 function buy(){
     selectYearAndDate();
     selectTimes();
     getPrice();
+    makeItemCountOhter();
 }
 function kakaopay() {
     buy();
+    console.log(itemArray+" 선택한 상품정보");
     requestUrl='http://localhost:8080/api/kakaopay';
+    let other=[];
+    other[0]=selectYear;
+    other[1]=selectMonth;
+    other[2]=selectDate;
+    var jsonArray= new Array();
+
+    for (var i=0; i<selectTime.length; i++) {
+        var jsonObj= new Object();
+        let data=JSON.stringify({
+		 "item":selectSeat,
+         "count":1,
+         "time":selectTime[i],
+	    });
+        jsonObj.itme= data;
+        jsonObj.year=selectYear;
+        jsonObj.month=selectMonth;
+        jsonObj.date=selectDate;
+        jsonObj = JSON.stringify(jsonObj);
+        //String 형태로 파싱한 객체를 다시 json으로 변환
+        jsonArray.push(JSON.parse(jsonObj));
+    }
+    console.log(jsonArray);
     let data=JSON.stringify({
 		 "totalPrice":totalPrice,
-         "item":selectSeat,
-         "month":selectMonth,
-		 "date":selectDate,
-         "count":selectTime,
-         "year":selectYear
+         "itemArray":itemArray,
+         "other":other,
+         "kind":"reservation"
 	});
+    
     result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
     if(result.bool){
+        selectTime=[];
         var url=result.messege;
         var childWin=window.open(url);
         opener.window.document.result.value = childWin.result.bool;
         return;
     }
+    selectTime=[]
     alert(result.messege);
-   
+}
+function makeItemCountOhter(){
+    var array=array2(selectTime.length,3);
+    for(var i=0;i<array.length;i++){
+        array[i][0]=selectSeat;
+        array[i][1]=1;
+        array[i][2]=selectTime[i];
+    }
+    itemArray=array;
+
+}
+function array2(rows, columns){
+	var arr = new Array(rows);
+    for(var i = 0; i < rows; i++){
+    	arr[i] = new Array(columns);
+    }
+    return arr;
 }
 function getPrice(){
     requestUrl='http://localhost:8080/api/getPrice';
     console.log('getPrice');
     let data=JSON.stringify({
 		 "productName":selectSeat,
-         "count":selectTime,
+         "count":selectTime.length,
 	});
     result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
