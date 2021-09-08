@@ -303,7 +303,7 @@ function getPrice(){
     console.log('getPrice');
     let data=JSON.stringify({
 		 "productName":selectSeat,
-         "count":selectTime.length,
+         "count":selectTime.length
 	});
     result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
@@ -418,7 +418,8 @@ function getVankDate(){
          "month":selectMonth,
 		 "date":selectDate,
          "times":selectTime,
-         "year":selectYear
+         "year":selectYear,
+         "kind":"reservation"
 	});
     result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
