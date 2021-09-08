@@ -392,12 +392,9 @@ function doInsert(impnum){
 	});
 	result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
-                alert(result.messege);
-                if(result.expiredDate!=null){
-                    alert('입금은행'+result.vbank+' 가상계좌번호'+result.vbankNum+' 입금기한'+result.expiredDate+' 총 금액'+result.totalPrice);
-                } 
-    selectTime=[];  
-    location.reload();   
+    alert(result.messege); 
+    setTimeout(function() {selectTime=[];location.reload();},500);
+ 
 }
 function selectYearAndDate(){
     selectYear=document.getElementById('year').innerHTML;
