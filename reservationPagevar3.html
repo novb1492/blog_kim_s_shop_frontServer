@@ -269,7 +269,6 @@ function kakaopay() {
          "other":other,
          "kind":"reservation"
 	});
-    
     result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
     if(result.bool){
@@ -283,7 +282,7 @@ function kakaopay() {
     alert(result.messege);
 }
 function makeItemCountOhter(){
-    var array=array2(selectTime.length,3);
+    var array=make2DArray(selectTime.length,3);
     for(var i=0;i<array.length;i++){
         array[i][0]=selectSeat;
         array[i][1]=1;
@@ -292,7 +291,7 @@ function makeItemCountOhter(){
     itemArray=array;
 
 }
-function array2(rows, columns){
+function make2DArray(rows, columns){
 	var arr = new Array(rows);
     for(var i = 0; i < rows; i++){
     	arr[i] = new Array(columns);
@@ -379,18 +378,17 @@ function vbank(){
 }
 function doInsert(impnum){
     console.log('doInsert'+impnum);
-    console.log(selectSeat+'seat');
-    console.log(selectDate+'date');
-    selectYearAndDate();
-    console.log(selectMonth+'month');
-    requestUrl='http://localhost:8080/api/insertReservation'
+    requestUrl='http://localhost:8080/api/buyImp';
+    let other=[];
+    other[0]=selectYear;
+    other[1]=selectMonth;
+    other[2]=selectDate;
     let data=JSON.stringify({
-		 "seat":selectSeat,
-         "month":selectMonth,
-		 "date":selectDate,
-         "times":selectTime,
-         "year":selectYear,
-         "paymentId":impnum
+		 "totalPrice":totalPrice,
+         "itemArray":itemArray,
+         "other":other,
+         "kind":"reservation",
+         "impid":impnum
 	});
 	result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
