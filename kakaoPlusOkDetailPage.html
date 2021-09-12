@@ -11,11 +11,12 @@
     console.log('자식창');
     window.onload=function(){
         console.log('자식창2');
-        getUrl();
+        opener.document.location.href="index.html";
+	    self.close();
     }
     function getUrl() {
         console.log('자식창3');
-        console.log(opener.window.document.getElementById('oauthUrl').value);
+     
             
     }
     

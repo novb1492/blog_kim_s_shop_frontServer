@@ -15,15 +15,14 @@ window.onload=function(){
     kakao();
 }
 function kakao() {
-	opener.document.location.href="index.html";
-	self.close();
-    /*var requestUrl='http://localhost:8080/api/kakaoMore';
+    var requestUrl='http://localhost:8080/api/kakaoMore';
 	result=fisrtRequest(requestUrl,null);
     console.log(result); 
     let kakaoLoingUrl=result.messege;
     document.getElementById('oauthUrl').value=kakaoLoingUrl;
-	console.log(kakaoLoingUrl);
-    var child;
+	console.log(kakaoLoingUrl+" 추가동의페이지");
+    location.href=kakaoLoingUrl;
+    /*var child;
 	child=window.open('kakaoPlusOkDetailPage.html','width=500','height=500');*/
 
 }
