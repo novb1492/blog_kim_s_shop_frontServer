@@ -53,9 +53,10 @@ function getEmail(){
 }
 function cancleReservation(){
     selectTimes();
-    requestUrl='http://localhost:8080/api/cancleReservation';
+    requestUrl='http://localhost:8080/api/canclePay';
     let data=JSON.stringify({
-		 "rid":selectTime
+		 "id":selectTime,
+         "kind":"reservation"
 	}); 
     result=fisrtRequest(requestUrl,data);
     alert(result.messege);  

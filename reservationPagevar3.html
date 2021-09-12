@@ -275,7 +275,6 @@ function kakaopay() {
         selectTime=[];
         var url=result.messege;
         var childWin=window.open(url);
-        opener.window.document.result.value = childWin.result.bool;
         return;
     }
     selectTime=[]
@@ -392,9 +391,13 @@ function doInsert(impnum){
 	});
 	result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
-    alert(result.messege); 
-    setTimeout(function() {selectTime=[];location.reload();},500);
- 
+    if(result.bool){
+        console.log('성공');
+        alert(result.messege); 
+        location.href="/showReservationPage.html";
+    }else{
+        alert(result.messege); 
+    }
 }
 function selectYearAndDate(){
     selectYear=document.getElementById('year').innerHTML;
