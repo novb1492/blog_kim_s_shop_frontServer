@@ -19,6 +19,7 @@
 <input type="hidden" id="oauthUrl" value="abc">
 <script>
 var xhr=new XMLHttpRequest();
+var child;
 function doLogin() {
 	 let data=JSON.stringify({
 		 "email":""+document.getElementById('email').value+"",
@@ -47,10 +48,8 @@ function goNaverLogin(){
     xhr.send(); /// ajax data부분
     xhr.onload = function() { 
         if(xhr.status==200){
-			var child;
-			child=window.open('naverLoginPage.html','width=500','height=500');
 			let naverLoginUrl=xhr.response;
-			document.getElementById('oauthLoginUrl').value=naverLoginUrl;
+			child=window.open(naverLoginUrl,'width=500','height=500');
 			console.log(naverLoginUrl);
         }else{
             alert('통신에 실패했습니다');
@@ -62,10 +61,8 @@ function goKakaoLogin(){
     xhr.send(); /// ajax data부분
     xhr.onload = function() { 
         if(xhr.status==200){
-			var child;
-			child=window.open('kakaoLoingPage.html','width=500','height=500');
 			let kakaoLoingUrl=xhr.response;
-			document.getElementById('oauthLoginUrl').value=kakaoLoingUrl;
+			child=window.open(kakaoLoingUrl,'width=500','height=500');
 			console.log(kakaoLoingUrl);
         }else{
             alert('통신에 실패했습니다');
