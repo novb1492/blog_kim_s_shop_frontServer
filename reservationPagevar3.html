@@ -274,11 +274,13 @@ function kakaopay() {
     if(result.bool){
         selectTime=[];
         var url=result.messege;
-        var childWin=window.open(url);
-        return;
+        var childWin=window.open(url,'width=300','height=300');
+  
+    }else{
+        selectTime=[]
+        alert(result.messege);
     }
-    selectTime=[]
-    alert(result.messege);
+    
 }
 function makeItemCountOhter(){
     var array=make2DArray(selectTime.length,3);
