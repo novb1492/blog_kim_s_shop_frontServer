@@ -14,7 +14,8 @@
     <div id="checkLogin"></div>
     <br>
     <input type="button" value="카카오전송" onclick="kakaosend()">
-    <input type="button" value="세틀" onclick="settle()">
+    <input type="button" value="세틀카드" onclick="settle()">
+    <input type="button" value="가상계좌" onclick="settleVbank()">
     <script src="/lib/js/jslib.js"></script>
  <script>
 function settle() {
@@ -33,15 +34,50 @@ function settle() {
     "method": "card",
     "trdDt": "20210913",    
     "trdTm": "132000",
-    "mchtTrdNo": "TEST0123456789",
+    "mchtTrdNo": "TEST4578",
     "mchtName": "테스트상점",
     "mchtEName": "TestShop",
     "pmtPrdtNm": "테스트상품",
     "trdAmt": price,
     "custAcntSumry": "홍길동",
-    "notiUrl": "https://localhost:8080/api/settle",
-    "nextUrl": "https://localhost:8080/api/settle",
-    "cancUrl": "https://localhost:8080/api/settle",
+    "notiUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
+    "nextUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
+    "cancUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
+    "pktHash": hash,
+    "ui": {
+        "type": "popup",
+        "width": "430",
+        "height": "660"
+    }
+}, function(rsp){
+    console.log(rsp);
+});      
+}
+function settleVbank() {
+    var requestUrl='http://localhost:8080/api/getSha256Hash';
+	result=fisrtRequest(requestUrl,null);
+    var message=result.messege.split(",");
+    var hash=message[0];
+    var price=message[1];
+    console.log(result);
+    console.log(price);
+    console.log(hash);
+    SETTLE_PG.pay({
+    "env": "https://tbnpg.settlebank.co.kr/vbank010/main.do",
+    "mchtId": "nxva_sb_il",
+    "method": "vbank",
+    "trdDt": "20210913",    
+    "trdTm": "132000",
+    "mchtTrdNo": "TEST7845",
+    "mchtName": "테스트상점",
+    "mchtEName": "TestShop",
+    "pmtPrdtNm": "테스트상품",
+    "trdAmt": price,
+    "custAcntSumry": "홍길동",
+    "expireDt":"20210915151000",
+    "notiUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
+    "nextUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
+    "cancUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
     "pktHash": hash,
     "ui": {
         "type": "popup",
