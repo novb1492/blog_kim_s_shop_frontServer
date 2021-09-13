@@ -10,11 +10,11 @@
 <script>
     console.log('자식창');
     window.onload=function(){
-        var result = getParameter("result")+"";
-        console.log("result : "+result);
+        var nextUrl = getParameter("nextUrl")+"";
+        console.log("nextUrl : "+nextUrl);
         alert('완료되었습니다');
         self.close();
-        opener.document.location.href="showReservationPage.html";
+        opener.document.location.href=nextUrl;
     }
     function getParameter(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
