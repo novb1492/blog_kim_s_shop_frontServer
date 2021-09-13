@@ -42,6 +42,7 @@ a-4<input type="radio" onclick="showMonth('a-4')" name="seat" >
 <div id="timeArea"></div>
 <br>
 <div id="insertOrCancle"></div>
+<input type="hidden" id="test" value="no">
 <script src="/lib/js/jslib.js"></script>
 <script>
 var xhr=new XMLHttpRequest();
@@ -247,7 +248,7 @@ function kakaopay() {
     other[2]=selectDate;
     var jsonArray= new Array();
 
-    for (var i=0; i<selectTime.length; i++) {
+    /*for (var i=0; i<selectTime.length; i++) {
         var jsonObj= new Object();
         let data=JSON.stringify({
 		 "item":selectSeat,
@@ -262,7 +263,7 @@ function kakaopay() {
         //String 형태로 파싱한 객체를 다시 json으로 변환
         jsonArray.push(JSON.parse(jsonObj));
     }
-    console.log(jsonArray);
+    console.log(jsonArray);*/
     let data=JSON.stringify({
 		 "totalPrice":totalPrice,
          "itemArray":itemArray,
@@ -299,6 +300,10 @@ function make2DArray(rows, columns){
     }
     return arr;
 }
+function showResult(message) {
+    console.log(message);
+    alert(message);
+;}
 function getPrice(){
     requestUrl='http://localhost:8080/api/getPrice';
     console.log('getPrice');
