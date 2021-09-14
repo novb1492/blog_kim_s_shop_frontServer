@@ -258,7 +258,7 @@ function settle() {
     var pktHash=result.pktHash;
     var itemName=selectSeat;
     var mchtCustId=result.mchtCustId;
-    doInsert2(mchtTrdNo);
+    doInsert2(mchtTrdNo,"card");
     if(bool){
         SETTLE_PG.pay({
         "env": "https://tbnpg.settlebank.co.kr",
@@ -290,7 +290,7 @@ function settle() {
     selectTime=[];
    
 }
-function doInsert2(mchtTrdNo){
+function doInsert2(mchtTrdNo,usedKind){
     console.log('doInsert'+mchtTrdNo);
     requestUrl='http://localhost:8080/api/tempInsertReservation';
     let data=JSON.stringify({
@@ -300,7 +300,7 @@ function doInsert2(mchtTrdNo){
          "year":selectYear,
          "status":'temp',
          "times":selectTime,
-         "usedKind":"settle",
+         "usedKind":usedKind,
 	});
 	result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
@@ -333,14 +333,14 @@ function settleVbank() {
     var pktHash=result.pktHash;
     var itemName=selectSeat;
     var mchtCustId=result.mchtCustId;
-    doInsert2(mchtTrdNo);
+    doInsert2(mchtTrdNo,"vbank");
     SETTLE_PG.pay({
     "env": "https://tbnpg.settlebank.co.kr",
     "mchtId": "nx_mid_il",
     "method": "vbank",
     "trdDt": trdDt,    
     "trdTm": trdTm,
-    "expireDt":"20210914140000",
+    "expireDt":"20210920140000",
     "mchtTrdNo":mchtTrdNo,
     "mchtName": "세틀뱅크",
     "mchtEName": "Settlebank",
