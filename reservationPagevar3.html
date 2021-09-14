@@ -316,31 +316,41 @@ function requestToSettle(){
 
 }
 function settleVbank() {
+    buy();
     var requestUrl='http://localhost:8080/api/getSha256Hash';
-	result=fisrtRequest(requestUrl,null);
-    var message=result.messege.split(",");
-    var hash=message[0];
-    var price=message[1];
+    let data=JSON.stringify({
+		 "totalPrice":totalPrice,
+         "mchtId":"nx_mid_il",
+         "kind":"reservation",
+         "method":"vbank",
+	});
+	result=fisrtRequest(requestUrl,data);
     console.log(result);
-    console.log(price);
-    console.log(hash);
+    var trdDt=result.trdDt;
+    var trdTm=result.trdTm;
+    var trdAmt=result.trdAmt;
+    var mchtTrdNo=result.mchtTrdNo;
+    var pktHash=result.pktHash;
+    var itemName=selectSeat;
+    var mchtCustId=result.mchtCustId;
+    doInsert2(mchtTrdNo);
     SETTLE_PG.pay({
     "env": "https://tbnpg.settlebank.co.kr",
     "mchtId": "nx_mid_il",
     "method": "vbank",
-    "trdDt": "20210913",    
-    "trdTm": "132000",
+    "trdDt": trdDt,    
+    "trdTm": trdTm,
     "expireDt":"20210914140000",
-    "mchtTrdNo": "TEST78451245",
+    "mchtTrdNo":mchtTrdNo,
     "mchtName": "세틀뱅크",
     "mchtEName": "Settlebank",
-    "pmtPrdtNm": "테스트상품",
-    "trdAmt": price,
-    "custAcntSumry": "홍길동",
+    "pmtPrdtNm": itemName,
+    "trdAmt": trdAmt,
+    "mchtCustId":mchtCustId,
     "notiUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
-    "nextUrl": "https://localhost:8443/donesettlePage.html",
+    "nextUrl": "http://localhost:3030/doneSettlebankPage.jsp",
     "cancUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
-    "pktHash": hash,
+    "pktHash": pktHash,
     "ui": {
         "type": "popup",
         "width": "430",
