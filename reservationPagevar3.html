@@ -257,7 +257,7 @@ function settle() {
     var mchtTrdNo=result.mchtTrdNo;
     var pktHash=result.pktHash;
     var itemName=selectSeat;
-	esult=fisrtRequest(requestUrl,data);
+    var mchtCustId=result.mchtCustId;
     doInsert2(mchtTrdNo);
     if(bool){
         SETTLE_PG.pay({
@@ -271,7 +271,7 @@ function settle() {
         "mchtEName": "kimsshop",
         "pmtPrdtNm": itemName,
         "trdAmt": trdAmt,
-        "custAcntSumry": name,
+        "mchtCustId":mchtCustId,
         "notiUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
         "nextUrl": "http://localhost:3030/doneSettlebankPage.jsp",
         "cancUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
@@ -294,17 +294,13 @@ function doInsert2(mchtTrdNo){
     console.log('doInsert'+mchtTrdNo);
     requestUrl='http://localhost:8080/api/tempInsertReservation';
     let data=JSON.stringify({
-		 "totalPrice":totalPrice,
          "seat":selectSeat,
          "month":selectMonth,
          "date":selectDate,
          "year":selectYear,
-         "name":name,
-         "email":email,
          "status":'temp',
          "times":selectTime,
          "usedKind":"settle",
-         "paymentId":mchtTrdNo
 	});
 	result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
