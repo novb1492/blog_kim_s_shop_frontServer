@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+    <script src="https://tbnpg.settlebank.co.kr/resources/js/SettlePG.js"></script>
     <title>예약페이지</title>
     <style>
         #month{text-align: center;}
@@ -228,8 +229,8 @@ function getTime(date){
                         $('#timeArea').append('<br>');
                     }
                 }
-                $('#insertOrCancle').append("<input type='button' onclick='iamport()' value='예약하기'>");
-                $('#insertOrCancle').append("<input type='button' value='가상계좌 예약' onclick='vbank()'>");
+                $('#insertOrCancle').append("<input type='button' onclick='settle()' value='카드예약'>");
+                $('#insertOrCancle').append("<input type='button' value='가상계좌 예약' onclick='settleVbank()'>");
                 $('#insertOrCancle').append("<input type='button' value='카카오페이' onclick='kakaopay()'>");
 }
 function buy(){
@@ -237,6 +238,87 @@ function buy(){
     selectTimes();
     getPrice();
     makeItemCountOhter();
+}
+function settle() {
+    buy();
+    var requestUrl='http://localhost:8080/api/getSha256Hash';
+    let data=JSON.stringify({
+		 "totalPrice":totalPrice,
+         "mchtId":"nxca_jt_il",
+         "method":"card",
+	});
+	result=fisrtRequest(requestUrl,data);
+    console.log(result);
+    var trdDt=result.trdDt;
+    var trdTm=result.trdTm;
+    var trdAmt=result.trdAmt;
+    var mchtTrdNo=result.mchtTrdNo;
+    var pktHash=result.pktHash;
+    var itemName=selectSeat;
+    SETTLE_PG.pay({
+    "env": "https://tbnpg.settlebank.co.kr",
+    "mchtId": "nxca_jt_il",
+    "method": "card",
+    "trdDt": trdDt,    
+    "trdTm": trdTm,
+    "mchtTrdNo": mchtTrdNo,
+    "mchtName": "kimsshop",
+    "mchtEName": "kimsshop",
+    "pmtPrdtNm": itemName,
+    "trdAmt": trdAmt,
+    "custAcntSumry": name,
+    "notiUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
+    "nextUrl": "https://localhost:8443/doneSettlebankPage.html",
+    "cancUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
+    "pktHash": pktHash,
+    "ui": {
+        "type": "iframe",
+        "width": "430",
+        "height": "660"
+    }
+}, function(rsp){
+    console.log('통신완료');
+    console.log(rsp);
+});      
+}
+function requestToSettle(){
+
+}
+function settleVbank() {
+    var requestUrl='http://localhost:8080/api/getSha256Hash';
+	result=fisrtRequest(requestUrl,null);
+    var message=result.messege.split(",");
+    var hash=message[0];
+    var price=message[1];
+    console.log(result);
+    console.log(price);
+    console.log(hash);
+    SETTLE_PG.pay({
+    "env": "https://tbnpg.settlebank.co.kr",
+    "mchtId": "nx_mid_il",
+    "method": "vbank",
+    "trdDt": "20210913",    
+    "trdTm": "132000",
+    "expireDt":"20210914140000",
+    "mchtTrdNo": "TEST78451245",
+    "mchtName": "세틀뱅크",
+    "mchtEName": "Settlebank",
+    "pmtPrdtNm": "테스트상품",
+    "trdAmt": price,
+    "custAcntSumry": "홍길동",
+    "notiUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
+    "nextUrl": "https://localhost:8443/donesettlePage.html",
+    "cancUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
+    "pktHash": hash,
+    "ui": {
+        "type": "popup",
+        "width": "430",
+        "height": "660"
+    }
+}, function(rsp){
+    console.log('통신완료');
+    console.log(rsp);
+});      
 }
 function kakaopay() {
     buy();
