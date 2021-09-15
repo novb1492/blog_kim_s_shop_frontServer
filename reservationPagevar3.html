@@ -248,44 +248,28 @@ function settle() {
          "mchtId":"nxca_jt_il",
          "kind":"reservation",
          "method":"card",
-	});
-	result=fisrtRequest(requestUrl,data);
-    console.log(result);
-    var trdDt=result.trdDt;
-    var trdTm=result.trdTm;
-    var trdAmt=result.trdAmt;
-    var mchtTrdNo=result.mchtTrdNo;
-    var pktHash=result.pktHash;
-    var itemName=selectSeat;
-    var mchtCustId=result.mchtCustId;
-    doInsert2(mchtTrdNo,"card");
-    if(bool){
-        card(trdDt,trdTm,mchtTrdNo,itemName,trdAmt,mchtCustId,pktHash);
-    }
-    selectTime=[];
-   
-}
-function doInsert2(mchtTrdNo,usedKind){
-    console.log('doInsert'+mchtTrdNo);
-    requestUrl='http://localhost:8080/api/tempInsertReservation';
-    let data=JSON.stringify({
          "seat":selectSeat,
          "month":selectMonth,
          "date":selectDate,
          "year":selectYear,
-         "status":'temp',
          "times":selectTime,
-         "usedKind":usedKind,
 	});
 	result=fisrtRequest(requestUrl,data);
-    console.log(result+' 제일위');
+    console.log(result);
     if(result.bool){
-        console.log('성공');
+        var trdDt=result.trdDt;
+        var trdTm=result.trdTm;
+        var trdAmt=result.trdAmt;
+        var mchtTrdNo=result.mchtTrdNo;
+        var pktHash=result.pktHash;
+        var itemName=selectSeat;
+        var mchtCustId=result.mchtCustId;
+        card(trdDt,trdTm,mchtTrdNo,itemName,trdAmt,mchtCustId,pktHash);
     }else{
-        alert(result.messege); 
-       
+        alert(result.messege);
     }
-    bool=result.bool;
+    selectTime=[];
+   
 }
 function requestToSettle(){
 
@@ -302,18 +286,28 @@ function settleVbank() {
             "mchtId":"nx_mid_il",
             "kind":"reservation",
             "method":"vbank",
+            "seat":selectSeat,
+            "month":selectMonth,
+            "date":selectDate,
+            "year":selectYear,
+            "times":selectTime,
+            "productName":selectSeat,
+            "count":selectTime.length
         });
         result=fisrtRequest(requestUrl,data);
         console.log(result);
-        var trdDt=result.trdDt;
-        var trdTm=result.trdTm;
-        var trdAmt=result.trdAmt;
-        var mchtTrdNo=result.mchtTrdNo;
-        var pktHash=result.pktHash;
-        var itemName=selectSeat;
-        var mchtCustId=result.mchtCustId;
-        doInsert2(mchtTrdNo,"vbank");
-        requestVbank(trdDt,trdTm,expireDt,itemName,trdAmt,mchtCustId,pktHash,mchtTrdNo);
+        if(result.bool){
+            var trdDt=result.trdDt;
+            var trdTm=result.trdTm;
+            var trdAmt=result.trdAmt;
+            var mchtTrdNo=result.mchtTrdNo;
+            var pktHash=result.pktHash;
+            var itemName=selectSeat;
+            var mchtCustId=result.mchtCustId;
+            requestVbank(trdDt,trdTm,expireDt,itemName,trdAmt,mchtCustId,pktHash,mchtTrdNo);
+        }else{
+            alert(result.messege);
+        }
     }else{
         alert(dateandtime.messege);
     }

@@ -67,6 +67,12 @@ let data=JSON.stringify({
  console.log(data);
 var requestUrl='http://localhost:8080/api/confrimSettle';
 var result=fisrtRequest(requestUrl,data);
+console.log(result.bool+" "+result.messege);
+  alert(result.messege);
+if(result.bool){
+    opener.document.location.href="showReservationPage.html";
+	self.close();
+}
 </script>
 </body>
 </html>
