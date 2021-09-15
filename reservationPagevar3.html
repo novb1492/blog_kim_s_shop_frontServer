@@ -229,8 +229,8 @@ function getTime(date){
                         $('#timeArea').append('<br>');
                     }
                 }
-                $('#insertOrCancle').append("<input type='button' onclick='settle()' value='카드예약'>");
-                $('#insertOrCancle').append("<input type='button' value='가상계좌 예약' onclick='settleVbank()'>");
+                $('#insertOrCancle').append("<input type='button' onclick='requestCard()' value='카드예약'>");
+                $('#insertOrCancle').append("<input type='button' value='가상계좌 예약' onclick='requestVbank()'>");
                 $('#insertOrCancle').append("<input type='button' value='카카오페이' onclick='kakaopay()'>");
 }
 function buy(){
@@ -238,8 +238,7 @@ function buy(){
     selectTimes();
     makeItemCountOhter();
 }
-var bool;
-function settle() {
+function requestCard() {
     buy();
     var requestUrl='http://localhost:8080/api/getSha256Hash';
     let data=JSON.stringify({
@@ -251,8 +250,7 @@ function settle() {
          "date":selectDate,
          "year":selectYear,
          "times":selectTime,
-         "productName":selectSeat,
-         "count":selectTime.length
+         "productNameAndCount":itemArray
 	});
 	result=fisrtRequest(requestUrl,data);
     console.log(result);
@@ -274,7 +272,7 @@ function settle() {
 function requestToSettle(){
 
 }
-function settleVbank() {
+function requestVbank() {
     buy();
         var requestUrl='http://localhost:8080/api/getSha256Hash';
         let data=JSON.stringify({
@@ -286,8 +284,7 @@ function settleVbank() {
             "date":selectDate,
             "year":selectYear,
             "times":selectTime,
-            "productName":selectSeat,
-            "count":selectTime.length
+            "productNameAndCount":itemArray
         });
         result=fisrtRequest(requestUrl,data);
         console.log(result);
@@ -300,7 +297,7 @@ function settleVbank() {
             var itemName=selectSeat;
             var mchtCustId=result.mchtCustId;
             var expireDt=result.expiredate;
-            requestVbank(trdDt,trdTm,expireDt,itemName,trdAmt,mchtCustId,pktHash,mchtTrdNo);
+            Vbank(trdDt,trdTm,expireDt,itemName,trdAmt,mchtCustId,pktHash,mchtTrdNo);
         }else{
             alert(result.messege);
         }
