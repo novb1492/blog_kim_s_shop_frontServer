@@ -236,7 +236,6 @@ function getTime(date){
 function buy(){
     selectYearAndDate();
     selectTimes();
-    getPrice();
     makeItemCountOhter();
 }
 var bool;
@@ -244,7 +243,6 @@ function settle() {
     buy();
     var requestUrl='http://localhost:8080/api/getSha256Hash';
     let data=JSON.stringify({
-		 "totalPrice":totalPrice,
          "mchtId":"nxca_jt_il",
          "kind":"reservation",
          "method":"card",
@@ -253,6 +251,8 @@ function settle() {
          "date":selectDate,
          "year":selectYear,
          "times":selectTime,
+         "productName":selectSeat,
+         "count":selectTime.length
 	});
 	result=fisrtRequest(requestUrl,data);
     console.log(result);
@@ -282,7 +282,6 @@ function settleVbank() {
         var expireDt=dateandtime.date;
         var requestUrl='http://localhost:8080/api/getSha256Hash';
         let data=JSON.stringify({
-            "totalPrice":totalPrice,
             "mchtId":"nx_mid_il",
             "kind":"reservation",
             "method":"vbank",
