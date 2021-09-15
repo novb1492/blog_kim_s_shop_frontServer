@@ -260,32 +260,7 @@ function settle() {
     var mchtCustId=result.mchtCustId;
     doInsert2(mchtTrdNo,"card");
     if(bool){
-        SETTLE_PG.pay({
-        "env": "https://tbnpg.settlebank.co.kr",
-        "mchtId": "nxca_jt_il",
-        "method": "card",
-        "trdDt": trdDt,    
-        "trdTm": trdTm,
-        "mchtTrdNo": mchtTrdNo,
-        "mchtName": "kimsshop",
-        "mchtEName": "kimsshop",
-        "pmtPrdtNm": itemName,
-        "trdAmt": trdAmt,
-        "mchtCustId":mchtCustId,
-        "notiUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
-        "nextUrl": "http://localhost:3030/doneSettlebankPage.jsp",
-        "cancUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
-        "pktHash": pktHash,
-        "ui": {
-            "type": "popup",
-            "width": "430",
-            "height": "660"
-        }
-        }, function(rsp){
-            //iframe인경우 온다고 한다
-            console.log('통신완료');
-            console.log(rsp);
-        });      
+        card(trdDt,trdTm,mchtTrdNo,itemName,trdAmt,mchtCustId,pktHash);
     }
     selectTime=[];
    
@@ -317,49 +292,32 @@ function requestToSettle(){
 }
 function settleVbank() {
     buy();
-    var requestUrl='http://localhost:8080/api/getSha256Hash';
-    let data=JSON.stringify({
-		 "totalPrice":totalPrice,
-         "mchtId":"nx_mid_il",
-         "kind":"reservation",
-         "method":"vbank",
-	});
-	result=fisrtRequest(requestUrl,data);
-    console.log(result);
-    var trdDt=result.trdDt;
-    var trdTm=result.trdTm;
-    var trdAmt=result.trdAmt;
-    var mchtTrdNo=result.mchtTrdNo;
-    var pktHash=result.pktHash;
-    var itemName=selectSeat;
-    var mchtCustId=result.mchtCustId;
-    doInsert2(mchtTrdNo,"vbank");
-    SETTLE_PG.pay({
-    "env": "https://tbnpg.settlebank.co.kr",
-    "mchtId": "nx_mid_il",
-    "method": "vbank",
-    "trdDt": trdDt,    
-    "trdTm": trdTm,
-    "expireDt":"20210920140000",
-    "mchtTrdNo":mchtTrdNo,
-    "mchtName": "세틀뱅크",
-    "mchtEName": "Settlebank",
-    "pmtPrdtNm": itemName,
-    "trdAmt": trdAmt,
-    "mchtCustId":mchtCustId,
-    "notiUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
-    "nextUrl": "http://localhost:3030/doneSettlebankPage.jsp",
-    "cancUrl": "http://kim80800.iptime.org:8080/auth/settlebank",
-    "pktHash": pktHash,
-    "ui": {
-        "type": "popup",
-        "width": "430",
-        "height": "660"
+    var dateandtime =getVankDate();
+    console.log(dateandtime.bool+" "+dateandtime.date+'시간 결과');
+    if(dateandtime.bool){
+        var expireDt=dateandtime.date;
+        var requestUrl='http://localhost:8080/api/getSha256Hash';
+        let data=JSON.stringify({
+            "totalPrice":totalPrice,
+            "mchtId":"nx_mid_il",
+            "kind":"reservation",
+            "method":"vbank",
+        });
+        result=fisrtRequest(requestUrl,data);
+        console.log(result);
+        var trdDt=result.trdDt;
+        var trdTm=result.trdTm;
+        var trdAmt=result.trdAmt;
+        var mchtTrdNo=result.mchtTrdNo;
+        var pktHash=result.pktHash;
+        var itemName=selectSeat;
+        var mchtCustId=result.mchtCustId;
+        doInsert2(mchtTrdNo,"vbank");
+        requestVbank(trdDt,trdTm,expireDt,itemName,trdAmt,mchtCustId,pktHash,mchtTrdNo);
+    }else{
+        alert(dateandtime.messege);
     }
-}, function(rsp){
-    console.log('통신완료');
-    console.log(rsp);
-});      
+    selectTime=[];
 }
 function kakaopay() {
     buy();
@@ -447,88 +405,6 @@ function getPrice(){
                 price=result.price;
            
 }
-function iamport(){
-    buy();
-    //가맹점 식별코드
-    IMP.init('imp59938102');
-    IMP.request_pay({
-        pg : 'kcp',
-        pay_method : 'card',
-        merchant_uid : 'merchant_uid'+ new Date().getTime(),
-        name : selectSeat, //결제창에서 보여질 이름
-        amount : totalPrice, //실제 결제되는 가격
-        buyer_email : email,
-        buyer_name : name,
-        buyer_tel : phoneNum,
-        buyer_addr : address,
-        buyer_postcode : postCode,
-        count :selectTime.length
-    },  function(rsp) {
-        if (rsp.success) {
-            console.log(rsp.imp_uid);
-            doInsert(rsp.imp_uid);
-        }else{
-            selectTime=[];
-             var msg = '결제에 실패하였습니다.';
-             msg += '에러내용 : ' + rsp.error_msg;
-             alert(msg);
-        }
-    });
-}
-function vbank(){
-    buy();
-    getVankDate();
-    //가맹점 식별코드
-    IMP.init('imp59938102');
-    IMP.request_pay({
-        pg : 'kcp',
-        pay_method : 'vbank',
-        merchant_uid : 'vbank'+ new Date().getTime(),
-        name : selectSeat, //결제창에서 보여질 이름
-        amount : totalPrice, //실제 결제되는 가격
-        buyer_email : email,
-        buyer_name : name,
-        buyer_tel : phoneNum,
-        buyer_addr : address,
-        buyer_postcode : postCode,
-        count :selectTime.length,
-        vbank_due:vbankDate
-    },  function(rsp) {
-        if (rsp.success) {
-            console.log(rsp.imp_uid);
-            doInsert(rsp.imp_uid);
-        }else{
-            selectTime=[];
-             var msg = '결제에 실패하였습니다.';
-             msg += '에러내용 : ' + rsp.error_msg;
-             alert(msg);
-        }
-    });
-}
-function doInsert(impnum){
-    console.log('doInsert'+impnum);
-    requestUrl='http://localhost:8080/api/buyImp';
-    let other=[];
-    other[0]=selectYear;
-    other[1]=selectMonth;
-    other[2]=selectDate;
-    let data=JSON.stringify({
-		 "totalPrice":totalPrice,
-         "itemArray":itemArray,
-         "other":other,
-         "kind":"reservation",
-         "impid":impnum
-	});
-	result=fisrtRequest(requestUrl,data);
-    console.log(result+' 제일위');
-    if(result.bool){
-        console.log('성공');
-        alert(result.messege); 
-        location.href="/showReservationPage.html";
-    }else{
-        alert(result.messege); 
-    }
-}
 function selectYearAndDate(){
     selectYear=document.getElementById('year').innerHTML;
     selectMonth=document.getElementById('month').innerHTML;
@@ -556,13 +432,7 @@ function getVankDate(){
 	});
     result=fisrtRequest(requestUrl,data);
     console.log(result+' 제일위');
-    if(result.bool){
-        vbankDate=result.messege;
-    }else{
-        alert(result.messege);
-        return;
-    }
-
+    return result;
 }
 function clearDateAndButton(){
     $('#showSelectedDate').empty();
