@@ -276,10 +276,6 @@ function requestToSettle(){
 }
 function settleVbank() {
     buy();
-    var dateandtime =getVankDate();
-    console.log(dateandtime.bool+" "+dateandtime.date+'시간 결과');
-    if(dateandtime.bool){
-        var expireDt=dateandtime.date;
         var requestUrl='http://localhost:8080/api/getSha256Hash';
         let data=JSON.stringify({
             "mchtId":"nx_mid_il",
@@ -303,13 +299,11 @@ function settleVbank() {
             var pktHash=result.pktHash;
             var itemName=selectSeat;
             var mchtCustId=result.mchtCustId;
+            var expireDt=result.expiredate;
             requestVbank(trdDt,trdTm,expireDt,itemName,trdAmt,mchtCustId,pktHash,mchtTrdNo);
         }else{
             alert(result.messege);
         }
-    }else{
-        alert(dateandtime.messege);
-    }
     selectTime=[];
 }
 function kakaopay() {
