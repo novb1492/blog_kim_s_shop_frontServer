@@ -269,9 +269,6 @@ function requestCard() {
     selectTime=[];
    
 }
-function requestToSettle(){
-
-}
 function requestVbank() {
     buy();
         var requestUrl='http://localhost:8080/api/getSha256Hash';
@@ -330,7 +327,6 @@ function kakaopay() {
     }
     console.log(jsonArray);*/
     let data=JSON.stringify({
-		 "totalPrice":totalPrice,
          "itemArray":itemArray,
          "other":other,
          "kind":"reservation"
