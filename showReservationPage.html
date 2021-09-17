@@ -89,7 +89,7 @@ function search() {
 function getReservation(){
     requestUrl='http://localhost:8080/api/getClientReservation';
         let data=JSON.stringify({
-		 "nowPage":nowPage*1,
+		 "nowPage":nowPage*1-1,
          "startDate":document.getElementById('startDate').value,
          "endDate":document.getElementById('endDate').value
 		}); 
