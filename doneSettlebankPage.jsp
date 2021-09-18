@@ -71,8 +71,8 @@ console.log(result.bool+" "+result.messege);
   alert(result.messege);
 if(result.bool){
     opener.document.location.href="showReservationPage.html";
-	self.close();
 }
+self.close();
 </script>
 </body>
 </html>

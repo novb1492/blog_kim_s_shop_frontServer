@@ -52,10 +52,10 @@ function getEmail(){
     document.getElementById('showEmail').innerHTML=(result.email);
 }
 function cancleReservation(){
-    selectTimes();
+    selectIds();
     requestUrl='http://localhost:8080/api/canclePay';
     let data=JSON.stringify({
-		 "id":selectTime,
+		 "ids":selectTime,
          "kind":"reservation"
 	}); 
     result=fisrtRequest(requestUrl,data);
@@ -125,7 +125,7 @@ function getReservation(){
                     }
                     alert(result.messege);
 }
-function selectTimes(){
+function selectIds(){
     var obj_length = document.getElementsByName("rid").length;
     for (var i=0; i<obj_length; i++) {
             if (document.getElementsByName("rid")[i].checked == true) {
