@@ -119,7 +119,7 @@ function getReservation(){
                         var remainder=reservations.length%paging;
                         console.log(remainder+" 나머지");
                             if(remainder!=0){
-                                for(var i=2;i>=remainder;i--){
+                                for(var i=paging-1;i>=remainder;i--){
                                     document.getElementById('body'+i).innerHTML=("");
                                 }
                             }
