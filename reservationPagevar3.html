@@ -354,37 +354,6 @@ function makeItemCountOhter(){
     itemArray=array;
 
 }
-function make2DArray(rows, columns){
-	var arr = new Array(rows);
-    for(var i = 0; i < rows; i++){
-    	arr[i] = new Array(columns);
-    }
-    return arr;
-}
-function showResult(message) {
-    console.log(message);
-    alert(message);
-;}
-function getPrice(){
-    requestUrl='http://localhost:8080/api/getPrice';
-    console.log('getPrice');
-    let data=JSON.stringify({
-		 "productName":selectSeat,
-         "count":selectTime.length
-	});
-    result=fisrtRequest(requestUrl,data);
-    console.log(result+' 제일위');
-                if(result.totalPrice<=0){
-                    alert(result.messege);
-                    countFlag=false;
-                    return;
-                }
-                alert('총 결제 금액:'+result.totalPrice);
-                countFlag=true;
-                totalPrice=result.totalPrice;
-                price=result.price;
-           
-}
 function selectYearAndDate(){
     selectYear=document.getElementById('year').innerHTML;
     selectMonth=document.getElementById('month').innerHTML;
@@ -400,19 +369,6 @@ function selectTimes(){
         console.log(selectTime[i]+'time');
     }
     selectTime.sort(function (a,b){ return a-b; });
-}
-function getVankDate(){
-    requestUrl='http://localhost:8080/api/getVankDate';
-    let data=JSON.stringify({
-         "month":selectMonth,
-		 "date":selectDate,
-         "times":selectTime,
-         "year":selectYear,
-         "kind":"reservation"
-	});
-    result=fisrtRequest(requestUrl,data);
-    console.log(result+' 제일위');
-    return result;
 }
 function clearDateAndButton(){
     $('#showSelectedDate').empty();
