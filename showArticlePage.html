@@ -15,20 +15,22 @@
     <div id="checkLogin"></div>
     <div id="titleArea"></div>
     <div id="textArea"></div>
-
+    <div id="pageArea"></div>
 <script src="/lib/js/jslib.js"></script>
 <script>
 var requestUrl;
 var result;
 window.onload=function(){
     checkLogin();
-    getArticle();
+    getArticle(1);
     checkOwn();
 }
-function getArticle() {
+function getArticle(page) {
     requestUrl='http:localhost:8080/auth/getArticle';
+    console.log(getParameterByName(location.search,'bid'));
     let data=JSON.stringify({
-         "bid":page,
+         "bid":getParameterByName(location.search,'bid'),
+         "page":page,
 	});
     result=fisrtRequest(requestUrl,data);
     
