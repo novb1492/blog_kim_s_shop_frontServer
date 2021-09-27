@@ -8,19 +8,60 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 <body>
-    <ul id="selectCountArea">
-        
-    </ul>
+    <ul id="selectCountArea"></ul>
+    <div id="buttons"></div>
 <script>
-var selectItem=[];
-selectItem=opener.parent.getSelectItems();
-console.log(selectItem);
+var selectItems=[];
+
+selectItems=opener.parent.getSelectItems();
+console.log(selectItems);
 window.onload=function(){
-    for(var i;i<selectItem.length;i++){
-    $('#selectCountArea').append("anc>");
+    for(var i=0;i<selectItems.length;i++){
+        $('#selectCountArea').append("<li class='item"+i+"'>"+selectItems[i]+"<input type='number' id='count"+i+"' min='1' placeholder='수량을 입력하세요'><input type='button' value='삭제' onclick='deleteItem("+i+")'><input type='hidden' id='item"+i+"' value='"+selectItems[i]+"'></li>");
+    }    
+    $('#buttons').append("<input type='button' value='카드결제' onclick='requestCard()'> ");
+    min=selectItems.length;
+}
+function deleteItem(className) {
+    console.log(className);
+    for(var i=0;i<selectItems.length;i++){
+        if(selectItems[i]==document.getElementById('item'+className).value){
+            console.log(selectItems[i]+' 삭제');
+            selectItems.splice(i,1);
+            break;
+        } 
     }
+    console.log(selectItems);
+    $('.item'+className).remove();
+}
+function buy() {
+    makeItemCountOhter();
 }
 
+function requestCard() {
+    buy();
+    var requestUrl='http://localhost:8080/api/getSha256Hash';
+    let data=JSON.stringify({
+         "mchtId":"nxca_jt_il",
+         "kind":"food",
+         "method":"card",
+         "productNameAndCount":itemArray
+	});
+	result=fisrtRequest(requestUrl,data);
+    console.log(result);
+    if(result.bool){
+        var trdDt=result.trdDt;
+        var trdTm=result.trdTm;
+        var trdAmt=result.trdAmt;
+        var mchtTrdNo=result.mchtTrdNo;
+        var pktHash=result.pktHash;
+        var itemName="아메리카노 ";
+        var mchtCustId=result.mchtCustId;
+        card(trdDt,trdTm,mchtTrdNo,itemName,trdAmt,mchtCustId,pktHash);
+    }else{
+        alert(result.messege);
+    }
+}
 </script>
 </body>
 </html>
