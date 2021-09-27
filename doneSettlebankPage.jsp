@@ -70,7 +70,14 @@ var result=fisrtRequest(requestUrl,data);
 console.log(result.bool+" "+result.messege);
   alert(result.messege);
 if(result.bool){
-    opener.document.location.href="showReservationPage.html";
+    var kind=result.kind;
+    if(kind=='reservation'){
+        opener.document.location.href="showReservationPage.html";
+    }else if(kind=='food'){
+        opener.opener.document.location.href="showReservationPage.html";
+        opener.close();
+    }
+    
 }
 self.close();
 </script>

@@ -14,7 +14,7 @@
     <script src="/lib/js/jslib.js"></script>
 <script>
 var selectItems=[];
-var itemName;
+var itemName="";
 var itemArray=[];
 
 console.log(selectItems);
@@ -27,7 +27,7 @@ window.onload=function(){
     for(var i=0;i<selectItems.length;i++){
         $('#selectCountArea').append("<li class='item"+i+"'>"+selectItems[i]+"<input type='number' class='count' id='count"+i+"' min='1' placeholder='수량을 입력하세요'><input type='button' value='삭제' onclick='deleteItem("+i+")'><input type='hidden' id='item"+i+"' value='"+selectItems[i]+"'></li>");
     }    
-    $('#buttons').append("<input type='button' value='카드결제' onclick='requestCard()'> ");
+    $('#buttons').append("<input type='button' value='카드결제' onclick='requestCard()'><input type='button' value='가상게좌' onclick='requestVbank()'> ");
     
 }
 function deleteItem(className) {
@@ -47,6 +47,7 @@ function buy() {
     makeItemCountOhter();
 }
 function makeItemName() {
+    console.log(selectItems);
     for(var i=0;i<selectItems.length;i++){
         itemName+=selectItems[i];
         if(i<selectItems.length){
@@ -86,7 +87,31 @@ function requestCard() {
         alert(result.messege);
     }
     itemName="";
-    selectItems=[];
+}
+function requestVbank() {
+    buy();
+        var requestUrl='http://localhost:8080/api/getSha256Hash';
+        let data=JSON.stringify({
+            "mchtId":"nx_mid_il",
+            "kind":"food",
+            "method":"vbank",
+            "productNameAndCount":itemArray
+        });
+        result=fisrtRequest(requestUrl,data);
+        console.log(result);
+        if(result.bool){
+            var trdDt=result.trdDt;
+            var trdTm=result.trdTm;
+            var trdAmt=result.trdAmt;
+            var mchtTrdNo=result.mchtTrdNo;
+            var pktHash=result.pktHash;
+            var mchtCustId=result.mchtCustId;
+            var expireDt=result.expiredate;
+            Vbank(trdDt,trdTm,expireDt,itemName,trdAmt,mchtCustId,pktHash,mchtTrdNo);
+        }else{
+            alert(result.messege);
+        }
+        itemName="";
 }
 </script>
 </body>
