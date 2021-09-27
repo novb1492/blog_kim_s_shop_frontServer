@@ -9,14 +9,52 @@
     <title>커피와케이크</title>
 </head>
 <body>
-    아메리카노(s)<input type="checkbox" onclick="" value="americano-s">
-    아메리카노(m)<input type="checkbox" name="coffee" value="americano-m">
-    <input type='button' onclick='requestCard()' value='카드예약'>
+    <ul id="showProductName"></ul>
+    <input type="button" value="수량선택" onclick="openBuyPopUp()">
+    <ul id="selectCountArea"></ul>
+    <div id="buttonsArea"></div>
+    <input type="hidden" id="test" value="abc">
+   
+  
     <script src="/lib/js/jslib.js"></script>
- <script>
+<script>
 var itemArray;
+var result;
+var items=[];
+var selectitem=[];
 window.onload=function(){
-    
+    getFood('food','coffee');
+}
+function getFood(bigkind,kind) {
+    var requestUrl="http://localhost:8080/api/getItems?bigkind="+bigkind+"&kind="+kind;
+    result=fisrtRequest(requestUrl,null);
+    console.log(result);
+    var itmes=result.itmes;
+    for(var i=0;i<itmes.length;i++){
+        $('#showProductName').append("<li>"+itmes[i].productName+"<input type='checkbox' class='item' value='"+itmes[i].productName+"'></li>");
+    }  
+}
+function selectItmes() {
+    var obj_length = document.getElementsByClassName("item").length;
+    for (var i=0; i<obj_length; i++) {
+        if (document.getElementsByClassName("item")[i].checked == true) {
+            selectitem[selectitem.length]=document.getElementsByClassName("item")[i].value;
+        }
+    }
+}
+function openBuyPopUp() {
+    selectItmes();
+    var openWin;
+    openWin = window.open("buyFoodPopUP.html","buyFoodPopUP", "width=570, height=350, resizable = no, scrollbars = no");  
+
+
+    /*for(var i=0;i<selectitem.length;i++){
+        $('#selectCountArea').append("<li class='selectItem'>"+selectitem[i]+"<input type='number' id='"+selectitem[i]+"count' min='1'></li>");
+    }*/
+   
+}
+function getSelectItems() {
+    return selectitem;
 }
 function buy() {
     makeItemCountOhter();
@@ -27,7 +65,7 @@ function makeItemCountOhter(){
         //array[i][0]=selectSeat;
        // array[i][1]=1;
     //}
-    itemArray=[['americano-s',3],['americano-m',1]];
+    itemArray=[['아메리카노-s',3],['아메리카노-m',1]];
 
 }
 function requestCard() {
@@ -47,14 +85,12 @@ function requestCard() {
         var trdAmt=result.trdAmt;
         var mchtTrdNo=result.mchtTrdNo;
         var pktHash=result.pktHash;
-        var itemName="americano-s";
+        var itemName="아메리카노 ";
         var mchtCustId=result.mchtCustId;
         card(trdDt,trdTm,mchtTrdNo,itemName,trdAmt,mchtCustId,pktHash);
     }else{
         alert(result.messege);
     }
-    selectTime=[];
-   
 }
  </script>   
 </body>
