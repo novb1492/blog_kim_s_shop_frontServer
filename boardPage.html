@@ -10,23 +10,39 @@
 <body>
 <a href="/index.html">Kim's Shop</a>   
 <div id="showEmail"></div>
+<div id="welcomeArea"></div>
+<div id="checkLogin"></div>
 <a href="writeArticlePage.html">글작성</a>
-
+<table id="articletable"  style="margin-left: auto; margin-right: auto;">
+        <tr id='header'>
+        <th>글번호</th>
+        <th>글제목</th>
+        <th>작성자</th>
+        <th>작성일</th>
+        <th>조회수</th>
+        </tr>
+</table>
+      
 </body>
 <script src="/lib/js/jslib.js"></script>
 <script>
 var requestUrl;
 var result;
+var articles=[];
 window.onload=function(){
-    showEmail();
+    checkLogin();
     showArticles(1);
 }
-function showEmail() {
-    document.getElementById('showEmail').innerHTML=(getEmail()+'님 환영합니다');
-}
 function showArticles(page) {
-    requestUrl='http://localhost:8080/api/getAllArticle';
-    result=fisrtRequest(requestUrl,null);
+    requestUrl='http://localhost:8080/auth/getAllArticle';
+    let data=JSON.stringify({
+         "nowPage":page,
+	});
+    result=fisrtRequest(requestUrl,data);
+    articles=result.articles;
+    for(var i=0;i<articles.length;i++){
+        $('#articletable').append("<tr class='article'><td>"+articles[i].bid+"</td><td><a href='showArticlePage.html?bid="+articles[i].bid+"&page=1'>"+articles[i].title+"</a></td><td>"+articles[i].email+"</td><td>"+articles[i].created+"</td><td>"+articles[i].clicked+"</td></tr>");
+    }
 }
 </script>
 </html>

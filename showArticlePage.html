@@ -4,73 +4,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.ckeditor.com/ckeditor5/29.1.0/classic/ckeditor.js"></script>
-    <!-- include libraries(jQuery, bootstrap) -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-    <!-- include summernote css/js -->
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <title>글 내용페이지</title>
 </head>
 <body>
-    제목:<input type="text" id="title" placeholder="제목을 적어주세요">
+    <a href="/index.html">Kim's Shop</a>
+<br>
     <div id="showEmail"></div>
-    <textarea id="summernote" name="editordata"></textarea>
-    <script src="/lib/js/jslib.js"></script>
-    <script>
-        var requestUrl;
-        var result;
-        window.onload=function(){
-            showEmail();
-            showArticles();
-        }
-        function showEmail() {
-            document.getElementById('showEmail').innerHTML=(getEmail()+'님 환영합니다');
-        }
-        function showArticles(page) {
-            requestUrl='http://localhost:8080/api/getAllArticle';
-        
-            result=fisrtRequest(requestUrl,null);
-            $('#summernote').summernote('code', result.textarea);
-        }
-        $(document).ready(function() {
-          $('#summernote').summernote();
-        });
-        $('#summernote').summernote({
-                        height: 300,                 // 에디터 높이
-                        minHeight: null,             // 최소 높이
-                        maxHeight: null,             // 최대 높이
-                        focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
-                        lang: "ko-KR",					// 한글 설정
-                        placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
-                        callbacks: {	//여기 부분이 이미지를 첨부하는 부분
-                            onImageUpload : function(files) {
-                                for (var i = files.length - 1; i >= 0; i--) {
-                                    uploadSummernoteImageFile(files[i],this);
-                                }
-                            },
-                            onPaste: function (e) {
-                                var clipboardData = e.originalEvent.clipboardData;
-                                if (clipboardData && clipboardData.items && clipboardData.items.length) {
-                                    var item = clipboardData.items[0];
-                                    if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
-                                        e.preventDefault();
-                                    }
-                                }
-                            }
-                        }
-            });
-            function uploadSummernoteImageFile(file, editor) {
-                requestUrl='http://localhost:8080/api/imageUpload';
-                var data = new FormData();
-                data.append("file", file);
-                var response=fisrtRequestForm(requestUrl,data);
-                console.log(response+' 젤위')
-                $(editor).summernote('insertImage', response.url);
-            }
-        </script> 
+    <div id="welcomeArea"></div>
+    <div id="checkLogin"></div>
+    <div id="titleArea"></div>
+    <div id="textArea"></div>
+
+<script src="/lib/js/jslib.js"></script>
+<script>
+var requestUrl;
+var result;
+window.onload=function(){
+    checkLogin();
+    getArticle();
+    checkOwn();
+}
+function getArticle() {
+    requestUrl='http:localhost:8080/auth/getArticle';
+    let data=JSON.stringify({
+         "bid":page,
+	});
+    result=fisrtRequest(requestUrl,data);
+    
+}
+function checkOwn() {
+    
+}
+      
+</script> 
 </body>
 </html>

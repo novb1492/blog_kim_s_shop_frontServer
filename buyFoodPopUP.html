@@ -16,7 +16,6 @@
 var selectItems=[];
 var itemName="";
 var itemArray=[];
-
 console.log(selectItems);
 window.onload=function(){
     selectItems=opener.parent.getSelectItems();
@@ -62,6 +61,7 @@ function makeItemCountOhter(){
         array[i][1]=document.getElementsByClassName('count')[i].value;
     }
     itemArray=array;
+    console.log(itemArray+' 구매');
 }
 function requestCard() {
     buy();
