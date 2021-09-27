@@ -8,6 +8,7 @@
     <title>커피와케이크</title>
 </head>
 <body>
+    <input type="button" value="커피" onclick="getFood('coffee')">&nbsp;<input type="button" value="케이크" onclick="getFood('cake')">
     <ul id="showProductName"></ul>
     <input type="button" value="수량선택" onclick="openBuyPopUp()">
     <ul id="selectCountArea"></ul>
@@ -22,15 +23,20 @@ var result;
 var items=[];
 var selectitem=[];
 window.onload=function(){
-    getFood('food','coffee');
+    getFood('coffee');
 }
-function getFood(bigkind,kind) {
-    var requestUrl="http://localhost:8080/api/getItems?bigkind="+bigkind+"&kind="+kind;
+function getFood(kind) {
+    $('#showProductName').empty();
+    var requestUrl="http://localhost:8080/api/getItems?bigkind=food&kind="+kind;
     result=fisrtRequest(requestUrl,null);
     console.log(result);
     var itmes=result.itmes;
     for(var i=0;i<itmes.length;i++){
-        $('#showProductName').append("<li>"+itmes[i].productName+"<input type='checkbox' class='item' value='"+itmes[i].productName+"'></li>");
+        var count=itmes[i].count;
+        $('#showProductName').append("<li>"+itmes[i].productName+"<input type='checkbox' id='item"+i+"' class='item' value='"+itmes[i].productName+"'>남은수량 "+count+"</li>");
+        if(count<=0){
+            document.getElementById('item'+i).disabled=true;
+        }
     }  
 }
 function selectItmes() {
