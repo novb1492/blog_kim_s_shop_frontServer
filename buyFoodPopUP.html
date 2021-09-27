@@ -6,21 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>음식 수량 선택페이지</title>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://tbnpg.settlebank.co.kr/resources/js/SettlePG.js"></script>
 </head>
 <body>
     <ul id="selectCountArea"></ul>
     <div id="buttons"></div>
+    <script src="/lib/js/jslib.js"></script>
 <script>
 var selectItems=[];
+var itemName;
+var itemArray=[];
 
-selectItems=opener.parent.getSelectItems();
 console.log(selectItems);
 window.onload=function(){
+    selectItems=opener.parent.getSelectItems();
+    if(selectItems.length==0){
+        alert('상품을 선택해 주세요');
+        self.close();
+    }
     for(var i=0;i<selectItems.length;i++){
-        $('#selectCountArea').append("<li class='item"+i+"'>"+selectItems[i]+"<input type='number' id='count"+i+"' min='1' placeholder='수량을 입력하세요'><input type='button' value='삭제' onclick='deleteItem("+i+")'><input type='hidden' id='item"+i+"' value='"+selectItems[i]+"'></li>");
+        $('#selectCountArea').append("<li class='item"+i+"'>"+selectItems[i]+"<input type='number' class='count' id='count"+i+"' min='1' placeholder='수량을 입력하세요'><input type='button' value='삭제' onclick='deleteItem("+i+")'><input type='hidden' id='item"+i+"' value='"+selectItems[i]+"'></li>");
     }    
     $('#buttons').append("<input type='button' value='카드결제' onclick='requestCard()'> ");
-    min=selectItems.length;
+    
 }
 function deleteItem(className) {
     console.log(className);
@@ -35,9 +43,25 @@ function deleteItem(className) {
     $('.item'+className).remove();
 }
 function buy() {
+    makeItemName();
     makeItemCountOhter();
 }
-
+function makeItemName() {
+    for(var i=0;i<selectItems.length;i++){
+        itemName+=selectItems[i];
+        if(i<selectItems.length){
+            itemName+=',';
+        }
+    }
+}
+function makeItemCountOhter(){
+    var array=make2DArray(selectItems.length,3);
+    for(var i=0;i<array.length;i++){
+        array[i][0]=selectItems[i];
+        array[i][1]=document.getElementsByClassName('count')[i].value;
+    }
+    itemArray=array;
+}
 function requestCard() {
     buy();
     var requestUrl='http://localhost:8080/api/getSha256Hash';
@@ -55,12 +79,14 @@ function requestCard() {
         var trdAmt=result.trdAmt;
         var mchtTrdNo=result.mchtTrdNo;
         var pktHash=result.pktHash;
-        var itemName="아메리카노 ";
         var mchtCustId=result.mchtCustId;
         card(trdDt,trdTm,mchtTrdNo,itemName,trdAmt,mchtCustId,pktHash);
+
     }else{
         alert(result.messege);
     }
+    itemName="";
+    selectItems=[];
 }
 </script>
 </body>

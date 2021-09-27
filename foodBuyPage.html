@@ -5,7 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://tbnpg.settlebank.co.kr/resources/js/SettlePG.js"></script>
     <title>커피와케이크</title>
 </head>
 <body>
@@ -45,52 +44,22 @@ function selectItmes() {
 function openBuyPopUp() {
     selectItmes();
     var openWin;
-    openWin = window.open("buyFoodPopUP.html","buyFoodPopUP", "width=570, height=350, resizable = no, scrollbars = no");  
-
-
-    /*for(var i=0;i<selectitem.length;i++){
-        $('#selectCountArea').append("<li class='selectItem'>"+selectitem[i]+"<input type='number' id='"+selectitem[i]+"count' min='1'></li>");
-    }*/
-   
+    var g_oInterval;
+    openWin = window.open("buyFoodPopUP.html","buyFoodPopUP", "width=570, height=350, resizable = no, scrollbars = no");   
+    g_oInterval = window.setInterval(function() {
+        try {
+            // 창이 꺼졌는지 판단
+            if( openWin == null || openWin.closed ) {
+                window.clearInterval(g_oInterval);
+                openWin = null;
+                selectitem=[];
+                alert('구매취소');
+            }
+        } catch (e) { }
+    }, 500);
 }
 function getSelectItems() {
     return selectitem;
-}
-function buy() {
-    makeItemCountOhter();
-}
-function makeItemCountOhter(){
-    //var array=make2DArray(selectTime.length,2);
-    //for(var i=0;i<array.length;i++){
-        //array[i][0]=selectSeat;
-       // array[i][1]=1;
-    //}
-    itemArray=[['아메리카노-s',3],['아메리카노-m',1]];
-
-}
-function requestCard() {
-    buy();
-    var requestUrl='http://localhost:8080/api/getSha256Hash';
-    let data=JSON.stringify({
-         "mchtId":"nxca_jt_il",
-         "kind":"food",
-         "method":"card",
-         "productNameAndCount":itemArray
-	});
-	result=fisrtRequest(requestUrl,data);
-    console.log(result);
-    if(result.bool){
-        var trdDt=result.trdDt;
-        var trdTm=result.trdTm;
-        var trdAmt=result.trdAmt;
-        var mchtTrdNo=result.mchtTrdNo;
-        var pktHash=result.pktHash;
-        var itemName="아메리카노 ";
-        var mchtCustId=result.mchtCustId;
-        card(trdDt,trdTm,mchtTrdNo,itemName,trdAmt,mchtCustId,pktHash);
-    }else{
-        alert(result.messege);
-    }
 }
  </script>   
 </body>
