@@ -27,12 +27,17 @@ window.onload=function(){
 }
 function getArticle(page) {
     requestUrl='http:localhost:8080/auth/getArticle';
-    console.log(getParameterByName(location.search,'bid'));
     let data=JSON.stringify({
          "bid":getParameterByName(location.search,'bid'),
          "page":page,
 	});
     result=fisrtRequest(requestUrl,data);
+    console.log(result);
+    if(result.bool){
+        return;
+    }
+    alert(result.messege);
+    location.href='index.html';
     
 }
 function checkOwn() {
