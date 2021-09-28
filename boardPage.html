@@ -46,19 +46,23 @@ function showArticles(page) {
         "nowPage":page,
 	});
     result=fisrtRequest(requestUrl,data);
-    articles=result.articles;
-    for(var i=0;i<articles.length;i++){
-        $('#articletable').append("<tr class='article'><td>"+articles[i].bid+"</td><td><a href='showArticlePage.html?bid="+articles[i].bid+"&page=1'>"+articles[i].title+"</a></td><td>"+articles[i].bemail+"</td><td>"+articles[i].bcreated+"</td><td>"+articles[i].bclicked+"</td></tr>");
+    if(result.bool){
+        articles=result.articles;
+        for(var i=0;i<articles.length;i++){
+            $('#articletable').append("<tr class='article'><td>"+articles[i].bid+"</td><td><a href='showArticlePage.html?bid="+articles[i].bid+"&page=1'>"+articles[i].title+"</a></td><td>"+articles[i].bemail+"</td><td>"+articles[i].bcreated+"</td><td>"+articles[i].bclicked+"</td></tr>");
+        }
+        nowPage=result.nowPage;
+        totalPage=result.totalPage;
+        $('#pageArea').append(nowPage+"/"+totalPage);
+        if(nowPage<totalPage){
+            $('#pageArea').append("<input type='button' value='다음' onclick='movepage(1)'>");
+        }
+        if(nowPage>1){
+            $('#pageArea').append("<input type='button' value='이전' onclick='movepage(-1)'>");
+        }
+        return;
     }
-     nowPage=result.nowPage;
-     totalPage=result.totalPage;
-    $('#pageArea').append(nowPage+"/"+totalPage);
-    if(nowPage<totalPage){
-        $('#pageArea').append("<input type='button' value='다음' onclick='movepage(1)'>");
-    }
-    if(nowPage>1){
-        $('#pageArea').append("<input type='button' value='이전' onclick='movepage(-1)'>");
-    }
+   alert(result.messege);
 }
 function movepage(num) {
     nowPage+=num;
