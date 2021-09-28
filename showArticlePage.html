@@ -73,7 +73,7 @@ function makeComentInput() {
 }
 function makeComent(coment) {
     for(var i=0;i<coment.length;i++){
-        $('#comentArea').append("<li>작성자 : "+coment[i].email+"<br>내용<br>"+coment[i].text+"</li>");
+        $('#comentArea').append("<li>작성자 : "+coment[i].email+"<br>내용<br><div id='coment"+coment[i].cid+"'>"+coment[i].text+"</div></li>");
     }
 }
       
