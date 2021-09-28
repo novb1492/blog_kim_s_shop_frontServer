@@ -13,17 +13,25 @@
     <div id="showEmail"></div>
     <div id="welcomeArea"></div>
     <div id="checkLogin"></div>
+    <br>
     <div id="titleArea"></div>
+    <div id="writerArea"></div>
+    <div id="clickedArea"></div>
+    <div id="createdArea"></div>
     <div id="textArea"></div>
+    <div id="writeComentArea"></div>
+    <ul id="comentArea"></ul>
     <div id="pageArea"></div>
+   
 <script src="/lib/js/jslib.js"></script>
 <script>
 var requestUrl;
 var result;
+var loginBool=false;
 window.onload=function(){
     checkLogin();
+    loginBool=getLoginBool();
     getArticle(1);
-    checkOwn();
 }
 function getArticle(page) {
     requestUrl='http:localhost:8080/auth/getArticle';
@@ -34,14 +42,39 @@ function getArticle(page) {
     result=fisrtRequest(requestUrl,data);
     console.log(result);
     if(result.bool){
+        var article=result.article;
+        var coment=result.coments;
+        makeArticle(article);
+        makeComentInput();
+        makeComent(coment);
         return;
     }
     alert(result.messege);
     location.href='index.html';
     
 }
-function checkOwn() {
+function makeArticle(article) {
+    document.getElementById('titleArea').innerHTML=('제목: '+article.title);
+    document.getElementById('writerArea').innerHTML=('작성자: '+article.email);
+    document.getElementById('clickedArea').innerHTML=('조회수: '+article.clicked);
+    document.getElementById('createdArea').innerHTML=('작성일: '+article.created);
+    document.getElementById('textArea').innerHTML=('내용<br>'+article.text);
     
+
+}
+function makeComentInput() {
+    var holderMessage;
+    if(loginBool){
+        holderMessage='로그인후 작성해주세요';
+    }else{
+        holderMessage='최대 100글자입니다';
+    }
+    document.getElementById('writeComentArea').innerHTML=("댓글작성<br><input type='text' placeholder='"+holderMessage+"'>"); 
+}
+function makeComent(coment) {
+    for(var i=0;i<coment.length;i++){
+        $('#comentArea').append("<li>작성자 : "+coment[i].email+"<br>내용<br>"+coment[i].text+"</li>");
+    }
 }
       
 </script> 
