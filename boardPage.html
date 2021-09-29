@@ -49,7 +49,7 @@ function showArticles(page) {
     if(result.bool){
         articles=result.articles;
         for(var i=0;i<articles.length;i++){
-            $('#articletable').append("<tr class='article'><td>"+articles[i].bid+"</td><td><a href='showArticlePage.html?bid="+articles[i].bid+"&page=1'>"+articles[i].title+"</a></td><td>"+articles[i].bemail+"</td><td>"+articles[i].bcreated+"</td><td>"+articles[i].bclicked+"</td></tr>");
+            $('#articletable').append("<tr class='article'><td>"+articles[i].id+"</td><td><a href='showArticlePage.html?bid="+articles[i].id+"&page=1'>"+articles[i].title+"</a></td><td>"+articles[i].writer+"</td><td>"+articles[i].created+"</td><td>"+articles[i].click+"</td></tr>");
         }
         nowPage=result.nowPage;
         totalPage=result.totalPage;
