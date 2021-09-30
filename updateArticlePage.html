@@ -61,6 +61,27 @@ function makeButtons() {
         $('#buttonsArea').append("<input type='button' onclick='updateArticle()' value='수정'>");
     }
 }
+function updateArticle() {
+    requestUrl='http://localhost:8080/api/updateArticle';
+    var title=document.getElementById('title').value;
+    var text=$('#'+textAreaId).summernote('code');
+    if(confrimLength(title.length,0)||confrimLength(text.length,0)){
+        alert('빈칸이 존재합니다');
+        return;
+    }else{
+        let data=JSON.stringify({
+         "bid":bid,
+         "title":title,
+		 "textarea":text
+        });
+        result=fisrtRequest(requestUrl,data);
+        console.log(result);
+        alert(result.messege);
+        if(result.bool){
+            location.href='showArticlePage.html?bid='+bid+'&page=1';
+        }
+    }   
+}
 </script>
 </body>
 </html>
