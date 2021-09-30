@@ -19,6 +19,7 @@
     <div id="clickedArea"></div>
     <div id="createdArea"></div>
     <div id="textArea"></div>
+    <div id="updateOrDeleteButtonArea"></div>
     <div id="writeComentArea"></div>
     <ul id="comentArea"></ul>
     <div id="pageArea"></div>
@@ -47,16 +48,18 @@ function getArticle(page) {
         makeArticle(article);
         makeComentInput();
         makeComent(coment);
-        makeButtons();
+        makeButtons(article);
         return;
     }
     alert(result.messege);
     location.href='index.html';
     
 }
-function makeButtons() {
-   var  loginEmail=document.getElementById('email').value;
-   console.log(loginEmail+" aa");
+function makeButtons(article) {
+   var  loginEmail=getLoginEmail();
+   if(loginEmail==article.email){
+       $('#updateOrDeleteButtonArea').append("<input type='button' onclick='goUpdatePage("+article.bid+")' value='글수정'><input type='button' onclick='deleteArticle("+article.bid+")' value='글삭제'> ");
+   }
 }
 function makeArticle(article) {
     document.getElementById('titleArea').innerHTML=('제목: '+article.title);
@@ -79,7 +82,9 @@ function makeComent(coment) {
         $('#comentArea').append("<li>작성자 : "+coment[i].email+"<br>내용<br><div id='coment"+coment[i].cid+"'>"+coment[i].text+"</div></li>");
     }
 }
-      
+ function goUpdatePage(bid) {
+     location.href='updateArticlePage.html?bid='+bid;
+ }     
 </script> 
 </body>
 </html>

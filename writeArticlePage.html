@@ -26,8 +26,11 @@
 <script>
 var requestUrl;
 var result;
+var textAreaId='summernote';
 window.onload=function(){
     getEmail();
+    readEditorConfig(textAreaId);
+    $('#'+textAreaId).summernote();
 }
 function getEmail() {
     requestUrl='http://localhost:8080/api/email';
@@ -38,7 +41,7 @@ function insertArticle() {
     requestUrl='http://localhost:8080/api/insertArticle';
     let data=JSON.stringify({
 		 "title":document.getElementById('title').value+"",
-		 "textarea":$('#summernote').summernote('code')
+		 "textarea":$('#'+textAreaId).summernote('code')
 	});
     result=fisrtRequest(requestUrl,data);
     if(result.bool){
@@ -48,10 +51,7 @@ function insertArticle() {
     }
     alert(result.messege);
 }
-$(document).ready(function() {
-  $('#summernote').summernote();
-});
-$('#summernote').summernote({
+/*$('#summernote').summernote({
 				height: 300,                 // 에디터 높이
 				minHeight: null,             // 최소 높이
 				maxHeight: null,             // 최대 높이
@@ -74,7 +74,7 @@ $('#summernote').summernote({
 						}
 					}
 				}
-	});
+	});*/
     function uploadSummernoteImageFile(file, editor) {
         requestUrl='http://localhost:8080/api/imageUpload';
 		var data = new FormData();
