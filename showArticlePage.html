@@ -8,10 +8,9 @@
     <title>글 내용페이지</title>
 </head>
 <body>
-    <a href="/index.html">Kim's Shop</a>
+    <div id="homeLink"></div>
 <br>
     <div id="welcomeArea"></div>
-    <input type="hidden" id="email" value="">
     <div id="checkLogin"></div>
     <br>
     <div id="titleArea"></div>
@@ -31,6 +30,7 @@ var result;
 var loginBool=false;
 window.onload=function(){
     checkLogin();
+    makeHomeLink();
     getArticle(1);
     
 }
