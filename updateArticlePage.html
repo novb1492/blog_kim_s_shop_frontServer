@@ -68,7 +68,7 @@ function updateArticle() {
     if(confrimLength(title.length,0)||confrimLength(text.length,0)){
         alert('빈칸이 존재합니다');
         return;
-    }else{
+    }
         let data=JSON.stringify({
          "bid":bid,
          "title":title,
@@ -80,7 +80,7 @@ function updateArticle() {
         if(result.bool){
             location.href='showArticlePage.html?bid='+bid+'&page=1';
         }
-    }   
+      
 }
 </script>
 </body>
