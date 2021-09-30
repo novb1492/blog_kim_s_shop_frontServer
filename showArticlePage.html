@@ -10,8 +10,8 @@
 <body>
     <a href="/index.html">Kim's Shop</a>
 <br>
-    <div id="showEmail"></div>
     <div id="welcomeArea"></div>
+    <input type="hidden" id="email" value="">
     <div id="checkLogin"></div>
     <br>
     <div id="titleArea"></div>
@@ -30,8 +30,8 @@ var result;
 var loginBool=false;
 window.onload=function(){
     checkLogin();
-    loginBool=getLoginBool();
     getArticle(1);
+    
 }
 function getArticle(page) {
     requestUrl='http:localhost:8080/auth/getArticle';
@@ -47,11 +47,16 @@ function getArticle(page) {
         makeArticle(article);
         makeComentInput();
         makeComent(coment);
+        makeButtons();
         return;
     }
     alert(result.messege);
     location.href='index.html';
     
+}
+function makeButtons() {
+   var  loginEmail=document.getElementById('email').value;
+   console.log(loginEmail+" aa");
 }
 function makeArticle(article) {
     document.getElementById('titleArea').innerHTML=('제목: '+article.title);
@@ -59,8 +64,6 @@ function makeArticle(article) {
     document.getElementById('clickedArea').innerHTML=('조회수: '+article.clicked);
     document.getElementById('createdArea').innerHTML=('작성일: '+article.created);
     document.getElementById('textArea').innerHTML=('내용<br>'+article.text);
-    
-
 }
 function makeComentInput() {
     var holderMessage;

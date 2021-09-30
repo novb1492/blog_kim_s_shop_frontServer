@@ -35,7 +35,6 @@ function getEmail() {
     document.getElementById('showEmail').innerHTML=('작성자: '+result.email);
 }
 function insertArticle() {
-    var markupStr = $('#summernote').summernote('code');
     requestUrl='http://localhost:8080/api/insertArticle';
     let data=JSON.stringify({
 		 "title":document.getElementById('title').value+"",
