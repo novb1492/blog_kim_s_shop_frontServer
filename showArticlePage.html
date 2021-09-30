@@ -82,9 +82,20 @@ function makeComent(coment) {
         $('#comentArea').append("<li>작성자 : "+coment[i].email+"<br>내용<br><div id='coment"+coment[i].cid+"'>"+coment[i].text+"</div></li>");
     }
 }
- function goUpdatePage(bid) {
-     location.href='updateArticlePage.html?bid='+bid;
- }     
+function goUpdatePage(bid) {
+    location.href='updateArticlePage.html?bid='+bid;
+}
+function deleteArticle(bid) {
+    requestUrl='http:localhost:8080/api/deleteArticle';
+    let data=JSON.stringify({
+         "bid":bid
+	});
+    result=fisrtRequest(requestUrl,data);
+    alert(result.messege);
+    if(result.bool){
+        location.href='index.jsp';
+    }
+}     
 </script> 
 </body>
 </html>
