@@ -94,7 +94,7 @@ function makeComent(coment) {
         var cid=coment[i].cid;
         $('#comentArea').append("<li class='coment"+cid+"'>작성자 : "+coment[i].email+"<br>내용<br><div id='coment"+cid+"'>"+coment[i].text+"</div></li>");
         if(coment[i].email==loginEmail){
-            $('.coment'+cid).append("<input type='button' onclick='updateComent("+cid+")' value='수정'><input type='button' onclick='deleteComent("+cid+")' value='삭제'> ")
+            $('.coment'+cid).append("<input type='button' id='ready"+cid+"'  onclick='readyComent("+cid+")' value='수정'><input type='button' onclick='deleteComent("+cid+")' value='삭제'><input type='button' id='cancle"+cid+"' onclick='cancle("+cid+")' value='취소' disabled> ")
         }
     }
 }
@@ -115,7 +115,7 @@ function deleteArticle(bid) {
 function insertComent() {
     var coment=document.getElementById('coment').value;
     var onlyText=document.getElementById('coment').innerText;
-    console.log(onlyText.length);
+    console.log(onlyText);
     if(confrimLength(coment.length,0)){
         alert('댓글이 빈칸입니다');
         return;
@@ -124,7 +124,6 @@ function insertComent() {
     let data=JSON.stringify({
          "coment":coment,
          "bid":bid,
-         "innertext":onlyText
 	});
     result=fisrtRequest(requestUrl,data);
     alert(result.messege);
@@ -132,10 +131,12 @@ function insertComent() {
         location.href='showArticlePage.html?bid='+bid+'&page=1';
     }
 } 
-function updateComent(cid) {
+function readyComent(cid) {
     if(comentFlag){
         cancle(beforeComentId);
     }
+	document.getElementById('cancle'+cid).disabled=false;
+	document.getElementById('ready'+cid).disabled=true;
     originComent=document.getElementById('coment'+cid).innerHTML;
     beforeComentId=cid;
     comentFlag=true;
@@ -172,10 +173,10 @@ function makeEditor(cid) {
 }   
 function cancle(cid) {
 	document.getElementById('coment'+cid).innerHTML=(originComent);
-	//document.getElementById(cid+'cancle').disabled=true;
-	//document.getElementById(cid+'ready').disabled=false;
-	//document.getElementById(cid+'try').disabled=true;
-	commentflag=false;
+	document.getElementById('cancle'+cid).disabled=true;
+	document.getElementById('ready'+cid).disabled=false;
+	//document.getElementById('try').disabled=true;
+	comentflag=false;
 }
 </script> 
 </body>
