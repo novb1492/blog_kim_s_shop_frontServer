@@ -38,6 +38,7 @@ var bid;
 var comentFlag=false;
 var beforeComentId;
 var originComent;
+var nowPage;
 window.onload=function(){
     checkLogin();
     makeHomeLink();
@@ -87,6 +88,11 @@ function makeComentInput() {
         holderMessage='로그인후 작성해주세요';
     }
     document.getElementById('writeComentArea').innerHTML=("댓글작성<br><textarea id='coment' cols='30' rows='3' placeholder='"+holderMessage+"'></textarea><input type='button' onclick='insertComent()' value='등록' >"); 
+    if(loginBool){
+        document.getElementById('coment').disabled=false;
+    }else{
+        document.getElementById('coment').disabled=true;
+    }
 }
 function makeComent(coment) {
     var loginEmail=getLoginEmail();
@@ -94,7 +100,7 @@ function makeComent(coment) {
         var cid=coment[i].cid;
         $('#comentArea').append("<li class='coment"+cid+"'>작성자 : "+coment[i].email+"<br>내용<br><div id='coment"+cid+"'>"+coment[i].text+"</div></li>");
         if(coment[i].email==loginEmail){
-            $('.coment'+cid).append("<input type='button' id='ready"+cid+"'  onclick='readyComent("+cid+")' value='수정'><input type='button' onclick='deleteComent("+cid+")' value='삭제'><input type='button' id='cancle"+cid+"' onclick='cancle("+cid+")' value='취소' disabled> ")
+            $('.coment'+cid).append("<input type='button' id='ready"+cid+"'  onclick='readyComent("+cid+")' value='수정'><input type='button' onclick='deleteComent("+cid+")' value='삭제'><input type='button' id='cancle"+cid+"' onclick='cancle("+cid+")' value='취소' disabled> <input type='button' id='try"+cid+"' onclick='updateComent("+cid+")' value='확인' disabled>")
         }
     }
 }
@@ -137,6 +143,7 @@ function readyComent(cid) {
     }
 	document.getElementById('cancle'+cid).disabled=false;
 	document.getElementById('ready'+cid).disabled=true;
+    document.getElementById('try'+cid).disabled=false;
     originComent=document.getElementById('coment'+cid).innerHTML;
     beforeComentId=cid;
     comentFlag=true;
@@ -175,8 +182,33 @@ function cancle(cid) {
 	document.getElementById('coment'+cid).innerHTML=(originComent);
 	document.getElementById('cancle'+cid).disabled=true;
 	document.getElementById('ready'+cid).disabled=false;
-	//document.getElementById('try').disabled=true;
+	document.getElementById('try'+cid).disabled=true;
 	comentflag=false;
+}
+function updateComent(cid){
+    var coment=$('#coment'+cid).summernote('code');
+    if(confrimLength(coment.length,0)){
+        alert('댓글이 빈칸입니다');
+        return;
+    }
+    console.log(coment);
+    requestUrl='http:localhost:8080/api/updateComent';
+    let data=JSON.stringify({
+         "coment":coment,
+         "bid":bid,
+	});
+    result=fisrtRequest(requestUrl,data);
+}
+function deleteComent(cid) {
+    requestUrl='http:localhost:8080/api/deleteComent';
+    let data=JSON.stringify({
+         "cid":cid,
+	});
+    result=fisrtRequest(requestUrl,data);
+    alert(result.messege);
+    if(result.bool){
+        location.href='showArticlePage.html?bid='+bid+'&page='+nowPage;
+    }
 }
 </script> 
 </body>
