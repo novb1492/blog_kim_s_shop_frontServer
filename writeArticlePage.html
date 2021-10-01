@@ -16,6 +16,11 @@
     <title>글쓰기페이지</title>
 </head>
 <body>
+    <div id="homeLink"></div>
+    <div id="welcomeArea"></div>
+    <input type="hidden" id="email" value="">
+    <div id="checkLogin"></div>
+    <br>
     제목:<input type="text" id="title" placeholder="제목을 적어주세요">
     <div id="showEmail"></div>
     <textarea id="summernote" name="editordata"></textarea>
@@ -28,6 +33,7 @@ var requestUrl;
 var result;
 var textAreaId='summernote';
 window.onload=function(){
+    
     getEmail();
     readEditorConfig(textAreaId);
     $('#'+textAreaId).summernote();
