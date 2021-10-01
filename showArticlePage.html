@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+          <!-- include libraries(jQuery, bootstrap) -->
+          <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+          <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+      
+          <!-- include summernote css/js -->
+          <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+          <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
     <title>글 내용페이지</title>
 </head>
 <body>
     <div id="homeLink"></div>
-<br>
     <div id="welcomeArea"></div>
     <div id="checkLogin"></div>
     <br>
@@ -28,6 +34,10 @@
 var requestUrl;
 var result;
 var loginBool=false;
+var bid;
+var comentFlag=false;
+var beforeComentId;
+var originComent;
 window.onload=function(){
     checkLogin();
     makeHomeLink();
@@ -60,6 +70,7 @@ function makeButtons(article) {
    if(loginEmail==article.email){
        $('#updateOrDeleteButtonArea').append("<input type='button' onclick='goUpdatePage("+article.bid+")' value='글수정'><input type='button' onclick='deleteArticle("+article.bid+")' value='글삭제'> ");
    }
+   bid=article.bid;
 }
 function makeArticle(article) {
     document.getElementById('titleArea').innerHTML=('제목: '+article.title);
@@ -71,15 +82,20 @@ function makeArticle(article) {
 function makeComentInput() {
     var holderMessage;
     if(loginBool){
-        holderMessage='로그인후 작성해주세요';
+        holderMessage='최대100글자입니다';
     }else{
-        holderMessage='최대 100글자입니다';
+        holderMessage='로그인후 작성해주세요';
     }
-    document.getElementById('writeComentArea').innerHTML=("댓글작성<br><input type='text' placeholder='"+holderMessage+"'>"); 
+    document.getElementById('writeComentArea').innerHTML=("댓글작성<br><textarea id='coment' cols='30' rows='3' placeholder='"+holderMessage+"'></textarea><input type='button' onclick='insertComent()' value='등록' >"); 
 }
 function makeComent(coment) {
+    var loginEmail=getLoginEmail();
     for(var i=0;i<coment.length;i++){
-        $('#comentArea').append("<li>작성자 : "+coment[i].email+"<br>내용<br><div id='coment"+coment[i].cid+"'>"+coment[i].text+"</div></li>");
+        var cid=coment[i].cid;
+        $('#comentArea').append("<li class='coment"+cid+"'>작성자 : "+coment[i].email+"<br>내용<br><div id='coment"+cid+"'>"+coment[i].text+"</div></li>");
+        if(coment[i].email==loginEmail){
+            $('.coment'+cid).append("<input type='button' onclick='updateComent("+cid+")' value='수정'><input type='button' onclick='deleteComent("+cid+")' value='삭제'> ")
+        }
     }
 }
 function goUpdatePage(bid) {
@@ -95,7 +111,72 @@ function deleteArticle(bid) {
     if(result.bool){
         location.href='boardPage.html';
     }
-}     
+} 
+function insertComent() {
+    var coment=document.getElementById('coment').value;
+    var onlyText=document.getElementById('coment').innerText;
+    console.log(onlyText.length);
+    if(confrimLength(coment.length,0)){
+        alert('댓글이 빈칸입니다');
+        return;
+    }
+    requestUrl='http:localhost:8080/api/insertComent';
+    let data=JSON.stringify({
+         "coment":coment,
+         "bid":bid,
+         "innertext":onlyText
+	});
+    result=fisrtRequest(requestUrl,data);
+    alert(result.messege);
+    if(result.bool){
+        location.href='showArticlePage.html?bid='+bid+'&page=1';
+    }
+} 
+function updateComent(cid) {
+    if(comentFlag){
+        cancle(beforeComentId);
+    }
+    originComent=document.getElementById('coment'+cid).innerHTML;
+    beforeComentId=cid;
+    comentFlag=true;
+    $('#coment'+cid).empty();
+    $('#coment'+cid).append("<textarea id='comentTextarea"+cid+"' cols='30' rows='3'></textarea>");
+    makeEditor(cid);
+    $('#comentTextarea'+cid).summernote('code',originComent);
+}
+function makeEditor(cid) {
+    $('#comentTextarea'+cid).summernote({
+				height: 300,                 // 에디터 높이
+				minHeight: null,             // 최소 높이
+				maxHeight: null,             // 최대 높이
+				focus: true,                  // 에디터 로딩후 포커스를 맞출지 여부
+				lang: "ko-KR",					// 한글 설정
+				placeholder: '최대 2048자까지 쓸 수 있습니다',	//placeholder 설정
+				callbacks: {	//여기 부분이 이미지를 첨부하는 부분
+					onImageUpload : function(files) {
+                        for (var i = files.length - 1; i >= 0; i--) {
+                            uploadSummernoteImageFile(files[i],this);
+            		    }
+					},
+					onPaste: function (e) {
+						var clipboardData = e.originalEvent.clipboardData;
+						if (clipboardData && clipboardData.items && clipboardData.items.length) {
+							var item = clipboardData.items[0];
+							if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+								e.preventDefault();
+							}
+						}
+					}
+				}
+});
+}   
+function cancle(cid) {
+	document.getElementById('coment'+cid).innerHTML=(originComent);
+	//document.getElementById(cid+'cancle').disabled=true;
+	//document.getElementById(cid+'ready').disabled=false;
+	//document.getElementById(cid+'try').disabled=true;
+	commentflag=false;
+}
 </script> 
 </body>
 </html>
