@@ -26,11 +26,11 @@ function findEmail() {
 	        if(xhr.status==200){
 	        	var result=JSON.parse(xhr.response);
 	        	if(result.bool){
-	        		alert(result.messege);
+	        		alert(result.message);
 	        		location.href="loginPage";
 	        		return;
 	        	}
-	        	alert(result.messege);
+	        	alert(result.message);
 	        	return;
 	        }
 	        alert('통신 실패');
@@ -52,10 +52,10 @@ function sendNumToServer() {
 	        		 document.getElementById('sendsms').disabled=true;  
 	        		 document.getElementById('reWrtiepHone').disabled=true;  
 	        		 document.getElementById('smsNum').disabled=true;  
-	        		alert(result.messege);
+	        		alert(result.message);
 	        		return;
 	        	}
-	        	alert(result.messege);
+	        	alert(result.message);
 	        	return;
 	        }
 	        alert('통신 실패');
@@ -77,10 +77,10 @@ function sendsms() {
 	        	if(result.bool){
 	        		 document.getElementById('sendsms').disabled=true;
 	        		 document.getElementById('phoneNum').disabled=true;  
-	        		alert(result.messege);
+	        		alert(result.message);
 	        		return;
 	        	}
-	        	alert(result.messege);
+	        	alert(result.message);
 	        	 document.getElementById('sendsms').disabled=false;  
 	        	return;
 	        }

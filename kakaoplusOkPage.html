@@ -18,7 +18,7 @@ function kakao() {
     var requestUrl='http://localhost:8080/api/kakaoMore';
 	result=fisrtRequest(requestUrl,null);
     console.log(result); 
-    let kakaoLoingUrl=result.messege;
+    let kakaoLoingUrl=result.message;
     document.getElementById('oauthUrl').value=kakaoLoingUrl;
 	console.log(kakaoLoingUrl+" 추가동의페이지");
     location.href=kakaoLoingUrl;

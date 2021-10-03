@@ -48,11 +48,11 @@ function insertArticle() {
 	});
     result=fisrtRequest(requestUrl,data);
     if(result.bool){
-        alert(result.messege);
+        alert(result.message);
         location.href='/boardPage.html';
         return;
     }
-    alert(result.messege);
+    alert(result.message);
 }
 $('#'+textAreaId).summernote({
 				height: 300,                 // 에디터 높이

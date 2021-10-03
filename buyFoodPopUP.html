@@ -84,7 +84,7 @@ function requestCard() {
         card(trdDt,trdTm,mchtTrdNo,itemName,trdAmt,mchtCustId,pktHash);
 
     }else{
-        alert(result.messege);
+        alert(result.message);
     }
     itemName="";
 }
@@ -109,7 +109,7 @@ function requestVbank() {
             var expireDt=result.expiredate;
             Vbank(trdDt,trdTm,expireDt,itemName,trdAmt,mchtCustId,pktHash,mchtTrdNo);
         }else{
-            alert(result.messege);
+            alert(result.message);
         }
         itemName="";
 }

@@ -67,8 +67,8 @@ let data=JSON.stringify({
  console.log(data);
 var requestUrl='http://localhost:8080/api/confrimSettle';
 var result=fisrtRequest(requestUrl,data);
-console.log(result.bool+" "+result.messege);
-  alert(result.messege);
+console.log(result.bool+" "+result.message);
+  alert(result.message);
 if(result.bool){
     var kind=result.kind;
     if(kind=='reservation'){

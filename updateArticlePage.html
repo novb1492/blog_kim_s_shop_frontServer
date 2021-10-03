@@ -74,7 +74,7 @@ function getArticle() {
         $('#'+textAreaId).summernote('code',result.text);
         return;
     }
-    alert(result.messege);
+    alert(result.message);
     location.href='index.html';
 }
 function makeButtons() {
@@ -99,7 +99,7 @@ function updateArticle() {
         });
         result=fisrtRequest(requestUrl,data);
         console.log(result);
-        alert(result.messege);
+        alert(result.message);
         if(result.bool){
             location.href='showArticlePage.html?bid='+bid+'&page=1';
         }

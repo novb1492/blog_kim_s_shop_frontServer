@@ -37,14 +37,14 @@ function sendNumToServer() {
 	        if(xhr.status==200){
 	        	var result=JSON.parse(xhr.response);
 	        	if(result.bool){
-	        		alert(result.messege);
+	        		alert(result.message);
 	        		 location.href="loginPage";
 	        		return;
 	        	}
 	       		 document.getElementById('goToServer').disabled=false;  
 	    		 document.getElementById('sendEmail').disabled=false;  
 	    		 document.getElementById('smsNum').disabled=false;  
-	        	alert(result.messege);
+	        	alert(result.message);
 	        	return;
 	        }
    		 	document.getElementById('goToServer').disabled=false;  
@@ -69,10 +69,10 @@ function sendEmail() {
 	        	if(result.bool){
 	        		 document.getElementById('sendEmail').disabled=true;
 	        		 document.getElementById('email').disabled=true;  
-	        		alert(result.messege);
+	        		alert(result.message);
 	        		return;
 	        	}
-	        	alert(result.messege);
+	        	alert(result.message);
 	        	 document.getElementById('sendEmail').disabled=false;  
 	        	return;
 	        }

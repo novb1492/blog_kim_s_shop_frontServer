@@ -62,7 +62,7 @@ function getArticle(page) {
         makeButtons(article);
         return;
     }
-    alert(result.messege);
+    alert(result.message);
     location.href='index.html';
     
 }
@@ -113,7 +113,7 @@ function deleteArticle(bid) {
          "bid":bid
 	});
     result=fisrtRequest(requestUrl,data);
-    alert(result.messege);
+    alert(result.message);
     if(result.bool){
         location.href='boardPage.html';
     }
@@ -132,7 +132,7 @@ function insertComent() {
          "bid":bid,
 	});
     result=fisrtRequest(requestUrl,data);
-    alert(result.messege);
+    alert(result.message);
     if(result.bool){
         location.href='showArticlePage.html?bid='+bid+'&page=1';
     }
@@ -186,7 +186,7 @@ function cancle(cid) {
 	comentflag=false;
 }
 function updateComent(cid){
-    var coment=$('#coment'+cid).summernote('code');
+    var coment=$('#comentTextarea'+cid).summernote('code');
     if(confrimLength(coment.length,0)){
         alert('댓글이 빈칸입니다');
         return;
@@ -195,9 +195,13 @@ function updateComent(cid){
     requestUrl='http://localhost:8080/api/updateComent';
     let data=JSON.stringify({
          "coment":coment,
-         "bid":bid,
+         "cid":cid,
 	});
     result=fisrtRequest(requestUrl,data);
+    alert(result.message);
+    if(result.bool){
+        location.href='showArticlePage.html?bid='+bid+'&page='+nowPage;
+    }
 }
 function deleteComent(cid) {
     requestUrl='http://localhost:8080/api/deleteComent';
@@ -205,7 +209,7 @@ function deleteComent(cid) {
          "cid":cid,
 	});
     result=fisrtRequest(requestUrl,data);
-    alert(result.messege);
+    alert(result.message);
     if(result.bool){
         location.href='showArticlePage.html?bid='+bid+'&page='+nowPage;
     }

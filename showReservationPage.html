@@ -66,7 +66,7 @@ function cancleReservation(){
          "kind":"reservation"
 	}); 
     result=fisrtRequest(requestUrl,data);
-    alert(result.messege);  
+    alert(result.message);  
     location.reload();
 }
 function next(){
@@ -130,7 +130,7 @@ function getReservation(){
                     if(nowPage>=totalPage){
                         nowPage-=1;
                     }
-                    alert(result.messege);
+                    alert(result.message);
 }
 function selectIds(){
     var obj_length = document.getElementsByName("rid").length;

@@ -92,7 +92,7 @@ function doUpdatePwd(){
 		 });
 		result=fisrtRequest(requestUrl,data);
 		canclePwd();
-		alert(result.messege);	 
+		alert(result.message);	 
 }
 function doChangePhone() {
 	var requestUrl='http://localhost:8080/api/updatePhoneNum';
@@ -104,7 +104,7 @@ function doChangePhone() {
 	if(result.bool){
 		canclePhone();
 	} 
-	alert(result.messege);	 
+	alert(result.message);	 
 }
 function canclePhone() {
 	document.getElementById('goToServer').disabled=true;
@@ -129,10 +129,10 @@ function sendsms() {
 	        		 document.getElementById('phoneNum').disabled=true;  
                      document.getElementById('smsNum').disabled=false;
                      document.getElementById('goToServer').disabled=false;
-	        		alert(result.messege);
+	        		alert(result.message);
 	        		return;
 	        	}
-	        	alert(result.messege);
+	        	alert(result.message);
 	        	 document.getElementById('sendsms').disabled=false;  
 	        	return;
 	        }
@@ -158,7 +158,7 @@ function updateAddress() {
 	if(result.bool){
 		cancleAddress();
 	} 
-	alert(result.messege);
+	alert(result.message);
 }
 function canclePwd() {
     document.getElementById('nowPwd').value="";

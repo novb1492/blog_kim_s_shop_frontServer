@@ -263,7 +263,7 @@ function requestCard() {
         var mchtCustId=result.mchtCustId;
         card(trdDt,trdTm,mchtTrdNo,itemName,trdAmt,mchtCustId,pktHash);
     }else{
-        alert(result.messege);
+        alert(result.message);
     }
     selectTime=[];
    
@@ -295,7 +295,7 @@ function requestVbank() {
             var expireDt=result.expiredate;
             Vbank(trdDt,trdTm,expireDt,itemName,trdAmt,mchtCustId,pktHash,mchtTrdNo);
         }else{
-            alert(result.messege);
+            alert(result.message);
         }
     selectTime=[];
 }
@@ -334,12 +334,12 @@ function kakaopay() {
     console.log(result+' 제일위');
     if(result.bool){
         selectTime=[];
-        var url=result.messege;
+        var url=result.message;
         var childWin=window.open(url,'width=300','height=300');
   
     }else{
         selectTime=[]
-        alert(result.messege);
+        alert(result.message);
     }
     
 }

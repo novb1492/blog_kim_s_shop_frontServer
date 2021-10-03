@@ -56,10 +56,10 @@ function sendNumToServer() {
 	        		 document.getElementById('sendsms').disabled=true;  
 	        		 document.getElementById('reWrtiepHone').disabled=true;  
 	        		 document.getElementById('smsNum').disabled=true;  
-	        		alert(result.messege);
+	        		alert(result.message);
 	        		return;
 	        	}
-	        	alert(result.messege);
+	        	alert(result.message);
 	        	return;
 	        }
 	        alert('통신 실패');
@@ -81,10 +81,10 @@ function sendsms() {
 	        	if(result.bool){
 	        		 document.getElementById('sendsms').disabled=true;
 	        		 document.getElementById('phoneNum').disabled=true;  
-	        		alert(result.messege);
+	        		alert(result.message);
 	        		return;
 	        	}
-	        	alert(result.messege);
+	        	alert(result.message);
 	        	 document.getElementById('sendsms').disabled=false;  
 	        	return;
 	        }
@@ -99,14 +99,14 @@ function checkPhone() {
 	 xhr.send('phoneNum='+data.value);
 	 xhr.onload=function(){
 	        if(xhr.status==200){
-	        	let color,messege;
+	        	let color,message;
 	        	console.log(xhr.response);
 	        	if(xhr.response=='true'){
 	        		color='blue';
-	        		messege='';
+	        		message='';
 	        	}else{
 	        		color='red';
-	        		messege='abc';
+	        		message='abc';
 	        	}
 	        	data.style.backgroundColor=color;
 	        	return;	
@@ -121,14 +121,14 @@ function checkEmail(){
 	 xhr.send('email='+data.value);
 	 xhr.onload=function(){
 	        if(xhr.status==200){
-	        	let color,messege;
+	        	let color,message;
 	        	console.log(xhr.response);
 	        	if(xhr.response=='true'){
 	        		color='blue';
-	        		messege='';
+	        		message='';
 	        	}else{
 	        		color='red';
-	        		messege='abc';
+	        		message='abc';
 	        	}
 	        	data.style.backgroundColor=color;
 	        	return;	
@@ -156,11 +156,11 @@ function insertUser(){
 	        if(xhr.status==200){
 	        	var result=JSON.parse(xhr.response);
 	        	if(result.bool){
-	        		alert(result.messege);
+	        		alert(result.message);
 					location.href="loginPage";
 	        		return;
 	        	}
-	        	alert(result.messege);
+	        	alert(result.message);
 	        	return;
 	        }
 	        alert('통신 실패');
