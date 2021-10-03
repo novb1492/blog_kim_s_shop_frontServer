@@ -108,7 +108,7 @@ function goUpdatePage(bid) {
     location.href='updateArticlePage.html?bid='+bid;
 }
 function deleteArticle(bid) {
-    requestUrl='http:localhost:8080/api/deleteArticle';
+    requestUrl='http://localhost:8080/api/deleteArticle';
     let data=JSON.stringify({
          "bid":bid
 	});
@@ -126,7 +126,7 @@ function insertComent() {
         alert('댓글이 빈칸입니다');
         return;
     }
-    requestUrl='http:localhost:8080/api/insertComent';
+    requestUrl='http://localhost:8080/api/insertComent';
     let data=JSON.stringify({
          "coment":coment,
          "bid":bid,
@@ -192,7 +192,7 @@ function updateComent(cid){
         return;
     }
     console.log(coment);
-    requestUrl='http:localhost:8080/api/updateComent';
+    requestUrl='http://localhost:8080/api/updateComent';
     let data=JSON.stringify({
          "coment":coment,
          "bid":bid,
@@ -200,7 +200,7 @@ function updateComent(cid){
     result=fisrtRequest(requestUrl,data);
 }
 function deleteComent(cid) {
-    requestUrl='http:localhost:8080/api/deleteComent';
+    requestUrl='http://localhost:8080/api/deleteComent';
     let data=JSON.stringify({
          "cid":cid,
 	});
