@@ -28,6 +28,7 @@
     <div id="writeComentArea"></div>
     <ul id="comentArea"></ul>
     <div id="pageArea"></div>
+    <div id="nextOrBefore"></div>
    
 <script src="/lib/js/jslib.js"></script>
 <script>
@@ -60,11 +61,63 @@ function getArticle(page) {
         makeComentInput();
         makeComent(coment);
         makeButtons(article);
+        makePage(result.nowPage,result.totalPage);
         return;
     }
     alert(result.message);
     location.href='index.html';
     
+}
+function makePage(nowPage,totalPage) {
+    $('#pageArea').append("<div id='nowPage'>"+nowPage+"</div>/<div id='totalPage'>"+totalPage+"</div>");
+    if(nowPage<totalPage){
+        $('#nextOrBefore').append("<input type='button' onclick='next()' value='다음'>");
+    }
+    if(nowPage>1){
+        $('#nextOrBefore').append("<input type='button' onclick='before()' value='이전'>");
+    }
+}
+function next() {
+    requestUrl='http:localhost:8080/auth/getComent';
+    var page=document.getElementById('nowPage').innerText;
+    page=page*1+1;
+    console.log(page);
+    let data=JSON.stringify({
+         "bid":getParameterByName(location.search,'bid'),
+         "page":page
+	});
+    result=fisrtRequest(requestUrl,data);
+    if(result.bool){
+        beforePaging();
+        makeComent(result.coments);
+        makePage(page,result.totalPage);
+        return;
+    }
+    alert(result.message);
+}
+function before() {
+    requestUrl='http:localhost:8080/auth/getComent';
+    var page=document.getElementById('nowPage').innerText;
+    page=page*1-1;
+    console.log(page);
+    let data=JSON.stringify({
+         "bid":getParameterByName(location.search,'bid'),
+         "page":page
+	});
+    result=fisrtRequest(requestUrl,data);
+    if(result.bool){
+        beforePaging();
+        makeComent(result.coments);
+        makePage(page,result.totalPage);
+        return;
+    }
+    alert(result.message);
+}
+function beforePaging() {
+    $('#comentArea').empty();
+    $('#pageArea').empty();
+    $('#nextOrBefore').empty();
+    $('#nextOrBefore').empty(); 
 }
 function makeButtons(article) {
    var  loginEmail=getLoginEmail();
