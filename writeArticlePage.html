@@ -32,6 +32,7 @@
 var requestUrl;
 var result;
 var textAreaId='summernote';
+var flag=true;
 window.onload=function(){
     getEmail();
 }
@@ -41,6 +42,7 @@ function getEmail() {
     document.getElementById('showEmail').innerHTML=('작성자: '+result.email);
 }
 function insertArticle() {
+    flag=false;
     requestUrl='http://localhost:8080/api/insertArticle';
     let data=JSON.stringify({
 		 "title":document.getElementById('title').value+"",
@@ -53,6 +55,7 @@ function insertArticle() {
         return;
     }
     alert(result.message);
+    flag=false;
 }
 $('#'+textAreaId).summernote({
 				height: 300,                 // 에디터 높이
@@ -120,6 +123,22 @@ $('#'+textAreaId).summernote({
         reader.readAsDataURL(image); 
     } 
 }*/
+window.addEventListener("unload", refresh());
+function refresh() {
+    var text=$('#'+textAreaId).summernote('code');
+    if(confirm('새로고침시 저장되지 않습니다 그래도 새로고침 하시겠습니까?')){
+        if(flag==false){
+            cancleArticle();
+        }
+    };
+}
+function cancleArticle() {
+    requestUrl='http://localhost:8080/api/cancleArticle';
+    let data=JSON.stringify({
+		 "text":$('#'+textAreaId).summernote('code')
+	});
+    result=fisrtRequest2(requestUrl,data);
+}
     </script>
 </body>
 </html>
