@@ -123,15 +123,11 @@ $('#'+textAreaId).summernote({
         reader.readAsDataURL(image); 
     } 
 }*/
-window.addEventListener("unload", refresh());
-function refresh() {
-    var text=$('#'+textAreaId).summernote('code');
-    if(confirm('새로고침시 저장되지 않습니다 그래도 새로고침 하시겠습니까?')){
-        if(flag==false){
-            cancleArticle();
-        }
-    };
-}
+window.onbeforeunload = function () {
+    if(flag){
+        cancleArticle();
+    } 
+};
 function cancleArticle() {
     requestUrl='http://localhost:8080/api/cancleArticle';
     let data=JSON.stringify({
